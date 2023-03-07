@@ -1,17 +1,43 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Logout extends Component {
-  render() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text>Logout Screen</Text>
-      </View>
-    );
-  }
+  state = {
+    loading: false,
+    error: null,
+  };
+
+  logout = async () => {
+    console.log('logout');
+    const { navigation } = this.props;
+    this.setState({ loading: true });
+
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        },
+      });
+      
+      if (response.status === 200) {
+        await AsyncStorage.removeItem('whatsthat_session_token');
+        await AsyncStorage.removeItem('whatsthat_user_id');
+        this.props.navigation.navigate('Login');
+      } else if (response.status === 401) {
+        console.log('Unauthorized');
+        await AsyncStorage.removeItem('whatsthat_session_token');
+        await AsyncStorage.removeItem('whatsthat_user_id');
+        navigation.navigate('Login');
+      } else if (response.status === 500) {
+        throw new Error('Server error');
+      } else {
+        throw new Error('Something went wrong');
+      }
+    } catch (error) {
+      this.setState({ loading: false, error: error.message });
+    }
+  };
 }
