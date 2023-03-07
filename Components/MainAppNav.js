@@ -13,7 +13,6 @@ export default class MainAppNav extends Component {
       this.checkLoggedIn();
     });
   }
-
   componentWillUnmount() {
     this.unsubscribe();
   }
