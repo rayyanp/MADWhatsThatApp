@@ -62,3 +62,29 @@ render() {
     );
   }
 }
+
+const styles = {
+    container: {
+      flex: 1,
+      backgroundColor: '#F5FCFF',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    buttonContainer: {
+      backgroundColor: '#2980b6',
+      paddingVertical: 15,
+      paddingHorizontal: 30,
+      borderRadius: 5,
+    },
+    buttonText: {
+      color: '#fff',
+      textAlign: 'center',
+      fontWeight: '700',
+    },
+    errorText: {
+      color: '#f00',
+      textAlign: 'center',
+      marginVertical: 10,
+    },
+  };
+    
