@@ -40,4 +40,25 @@ export default class Logout extends Component {
       this.setState({ loading: false, error: error.message });
     }
   };
+
+render() {
+    const { loading, error } = this.state;
+
+    return (
+      <View style={styles.container}>
+        {error && <Text style={styles.errorText}>{error}</Text>}
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={this.logout}
+          disabled={loading}
+        >
+          {loading ? (
+            <Text style={styles.buttonText}>Loading...</Text>
+          ) : (
+            <Text style={styles.buttonText}>Logout</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  }
 }
