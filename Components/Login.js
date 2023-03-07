@@ -153,3 +153,67 @@ export default class LoginScreen extends Component {
       );
     }
   }
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#F5FCFF',
+    },
+    header: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 24,
+    },
+    errorText: {
+      color: 'red',
+      marginBottom: 16,
+    },
+    input: {
+      backgroundColor: 'white',
+      width: '80%',
+      height: 40,
+      padding: 8,
+      borderWidth: 1,
+      borderColor: '#ccc',
+      marginBottom: 16,
+    },
+    buttonContainer: {
+      backgroundColor:'#2980b9',
+      padding: 10,
+      borderRadius: 8,
+      width: '80%',
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: '#fff',
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    createAccountButton: {
+      marginTop: 10,
+      backgroundColor: 'white',
+      borderColor: '#2980b9',
+      borderWidth: 1,
+      borderRadius: 4,
+      padding: 10,
+      alignItems: 'center',
+    },
+    createAccountText: {
+      color: '#2980b9',
+      fontWeight: 'bold',
+      fontSize: 16,
+    },
+    loadingContainer: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    loadingText: {
+      marginTop: 16,
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+  });
+  
