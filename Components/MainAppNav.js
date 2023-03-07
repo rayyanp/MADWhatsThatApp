@@ -2,17 +2,18 @@ import { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import ChatList from './ChatList';
 import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
+import Contacts from './Contacts';
 
 import Profile from './Profile';
 import SearchUser from './SearchUser';
 import Logout from './Logout';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default class MainAppNav extends Component {
@@ -59,7 +60,7 @@ export default class MainAppNav extends Component {
         />
         <Tab.Screen
           name="ContactsList"
-          component={ContactsListNav}
+          component={Contacts}
           options={{
             tabBarLabel: 'Contacts',
             headerShown: false,
