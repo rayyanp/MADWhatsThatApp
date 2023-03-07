@@ -111,4 +111,45 @@ export default class LoginScreen extends Component {
         ]);
       });
     }      
-}
+
+    render() {
+      return (
+        <View style={styles.container}>
+          {this.state.loading ? (
+            <ActivityIndicator size="large" color="#0000ff" />
+          ) : (
+            <>
+              <Text style={styles.header}>Login</Text>
+              <Text style={styles.errorText}>{this.state.error}</Text>
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => this.setState({ email: text })}
+                value={this.state.email}
+                placeholder="Email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={(text) => this.setState({ password: text })}
+                value={this.state.password}
+                placeholder="Password"
+                secureTextEntry
+              />
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={this._onPressButton}>
+                <Text style={styles.buttonText}>Log In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+              style={styles.createAccountButton}
+              onPress={() => this.props.navigation.navigate('Register')}
+              >
+              <Text style={styles.createAccountText}>Register</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      );
+    }
+  }
