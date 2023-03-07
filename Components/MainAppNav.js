@@ -4,6 +4,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import Profile from './Profile';
+import SearchUser from './SearchUser';
+import Logout from './Logout';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -38,9 +42,50 @@ export default class MainAppNav extends Component {
             ),
           }}
         />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="person-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="ContactsList"
+          component={ContactsListNav}
+          options={{
+            tabBarLabel: 'Contacts',
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="people-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="SearchUser"
+          component={SearchUser}
+          options={{
+            tabBarLabel: 'Search User',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="search-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Logout"
+          component={Logout}
+          options={{
+            tabBarLabel: 'Logout',
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="log-out-outline" size={size} color={color} />
+            ),
+          }}
+        />
       </Tab.Navigator>
     );
   }
 }
-
 
