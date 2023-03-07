@@ -85,4 +85,54 @@ _onPressButton() {
     });
 }
 
+render() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Create Account</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="First Name"
+        onChangeText={(text) => this.setState({ first_name: text })}
+        value={this.state.first_name}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        onChangeText={(text) => this.setState({ last_name: text })}
+        value={this.state.last_name}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email Address"
+        onChangeText={(text) => this.setState({ email: text })}
+        value={this.state.email}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry={true}
+        onChangeText={(text) => this.setState({ password: text })}
+        value={this.state.password}
+      />
+      {this.state.error !== '' && (
+        <Text style={styles.error}>{this.state.error}</Text>
+      )}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={this._onPressButton}
+          >
+          <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+          {this.state.success && (
+        <Text style={styles.success}>Registration Successful, you may now login</Text>
+      )}
+        <TouchableOpacity
+          style={styles.createAccountButton}
+          onPress={() => this.props.navigation.navigate('Login')}
+        >
+          <Text style={styles.createAccountText}>Login</Text>
+        </TouchableOpacity>
+    </View>
+    );
+  }
 }
