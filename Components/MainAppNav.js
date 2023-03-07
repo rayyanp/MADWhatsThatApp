@@ -8,6 +8,7 @@ import ChatList from './ChatList';
 import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
 import Contacts from './Contacts';
+import Blocked from './Blocked';
 
 import Profile from './Profile';
 import SearchUser from './SearchUser';
@@ -60,7 +61,7 @@ export default class MainAppNav extends Component {
         />
         <Tab.Screen
           name="ContactsList"
-          component={Contacts}
+          component={ContactsListNav}
           options={{
             tabBarLabel: 'Contacts',
             headerShown: false,
@@ -100,6 +101,15 @@ function ChatNav() {
         <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="ChatInfo" component={ChatInfo} />
+      </Stack.Navigator>
+    );
+  }
+
+  function ContactsListNav() {
+    return (
+      <Stack.Navigator initialRouteName="Contacts">
+        <Stack.Screen name="Contacts" component={Contacts} options={{ headerShown: false }} />
+        <Stack.Screen name="Blocked" component={Blocked} />
       </Stack.Navigator>
     );
   }
