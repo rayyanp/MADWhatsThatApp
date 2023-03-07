@@ -4,6 +4,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import ChatList from './ChatList';
+import ChatScreen from './ChatScreen';
+import ChatInfo from './ChatInfo';
+
 import Profile from './Profile';
 import SearchUser from './SearchUser';
 import Logout from './Logout';
@@ -89,3 +93,12 @@ export default class MainAppNav extends Component {
   }
 }
 
+function ChatNav() {
+    return (
+      <Stack.Navigator initialRouteName="ChatListScreen">
+        <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        <Stack.Screen name="ChatInfo" component={ChatInfo} />
+      </Stack.Navigator>
+    );
+  }

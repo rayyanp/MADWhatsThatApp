@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View} from 'react-native';
 
-export default class SearchUser extends Component {
+export default class ChatScreen extends Component {
   render() {
     return (
       <View
@@ -10,7 +10,7 @@ export default class SearchUser extends Component {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text>SearchUser Screen</Text>
+        <Text>ChatScreen</Text>
       </View>
     );
   }
