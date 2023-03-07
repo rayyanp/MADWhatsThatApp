@@ -7,14 +7,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ChatList from './ChatList';
 import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
-import Contacts from './Contacts';
 import Blocked from './Blocked';
-
+import Contacts from './Contacts';
 import Profile from './Profile';
 import SearchUser from './SearchUser';
+import CameraSend from './CameraSend';
 import Logout from './Logout';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default class MainAppNav extends Component {
@@ -23,6 +23,7 @@ export default class MainAppNav extends Component {
       this.checkLoggedIn();
     });
   }
+
   componentWillUnmount() {
     this.unsubscribe();
   }
@@ -50,7 +51,7 @@ export default class MainAppNav extends Component {
         />
         <Tab.Screen
           name="Profile"
-          component={Profile}
+          component={ProfileNav}
           options={{
             headerShown: false,
             tabBarLabel: 'Profile',
@@ -96,20 +97,29 @@ export default class MainAppNav extends Component {
 }
 
 function ChatNav() {
-    return (
-      <Stack.Navigator initialRouteName="ChatListScreen">
-        <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen name="ChatInfo" component={ChatInfo} />
-      </Stack.Navigator>
-    );
-  }
+  return (
+    <Stack.Navigator initialRouteName="ChatListScreen">
+      <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      <Stack.Screen name="ChatInfo" component={ChatInfo} />
+    </Stack.Navigator>
+  );
+}
 
-  function ContactsListNav() {
-    return (
-      <Stack.Navigator initialRouteName="Contacts">
-        <Stack.Screen name="Contacts" component={Contacts} options={{ headerShown: false }} />
-        <Stack.Screen name="Blocked" component={Blocked} />
-      </Stack.Navigator>
-    );
-  }
+function ContactsListNav() {
+  return (
+    <Stack.Navigator initialRouteName="Contacts">
+      <Stack.Screen name="Contacts" component={Contacts} options={{ headerShown: false }} />
+      <Stack.Screen name="Blocked" component={Blocked} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileNav() {
+  return (
+    <Stack.Navigator initialRouteName="EditProfile">
+      <Stack.Screen name="EditProfile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="CameraSend" component={CameraSend} />
+    </Stack.Navigator>
+  );
+}
