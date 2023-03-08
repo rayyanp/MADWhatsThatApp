@@ -14,7 +14,7 @@ import SearchUser from './SearchUser';
 import CameraSend from './CameraSend';
 import Logout from './Logout';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default class MainAppNav extends Component {
