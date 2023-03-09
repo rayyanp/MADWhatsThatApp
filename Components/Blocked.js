@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Contacts extends Component {
@@ -50,4 +51,54 @@ export default class Contacts extends Component {
       this.setState({ error: error.message });
     }
   }
+
+  renderItem = ({ item }) => (
+    <View
+      style={styles.contactContainer}
+    >
+      <Text style={styles.contactName}>{item.name}</Text>
+    </View>
+  );
+
+  render() {
+    const { contacts, error } = this.state;
+  
+    return (
+      <View style={styles.container}>
+        {error && <Text style={styles.error}>{error}</Text>}
+        <FlatList
+          data={contacts}
+          renderItem={this.renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    );
+  }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+  },
+  contactContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1,
+  },
+  contactName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  error: {
+    color: '#FF3B30',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+});
