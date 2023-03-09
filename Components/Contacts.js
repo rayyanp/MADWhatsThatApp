@@ -9,10 +9,17 @@ export default class Contacts extends Component {
 
   state = {
     contacts: [],
+    photos: {}, // map of contact IDs to photo URLs
     error: null,
   };
 
   async componentDidMount() {
+    this.props.navigation.addListener('focus', () => {
+      this.getContacts();
+    });
+  }
+
+  getContacts = async () => {
     fetch('http://localhost:3333/api/1.0.0/contacts', {
       headers: {
         'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
@@ -30,20 +37,58 @@ export default class Contacts extends Component {
           throw new Error('Not Found');
         }
       })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const contacts = data.map((contact) => ({
-            id: contact.user_id.toString(),
-            name: `${contact.first_name} ${contact.last_name}`,
-          }));
-          this.setState({ contacts, error: null });
-        } else {
-          throw new Error('Data is not an array');
+      .then(async (data) => {
+        const contacts = data.map((contact) => ({
+          id: contact.user_id.toString(),
+          name: `${contact.first_name} ${contact.last_name}`,
+        }));
+
+        // Call get_profile_image for each contact
+        for (const contact of contacts) {
+          await this.get_profile_image(contact.id);
         }
+
+        this.setState({ contacts, error: null });
       })
       .catch((error) => {
         this.setState({ error: error.message });
       });
+  }
+
+  get_profile_image = async (contactId) => {
+    const session_token = await AsyncStorage.getItem('whatsthat_session_token');
+    fetch(`http://localhost:3333/api/1.0.0/user/`+contactId+`/photo`, {
+        method: "GET",
+        headers: {
+          'X-Authorization': session_token,
+        }
+    })
+    .then((res) => {
+        if(res.status === 200){
+          return res.blob()
+        }
+        else if(res.status === 401){
+          throw new Error("Unauthorized")
+        }
+        else if(res.status === 404){
+          throw new Error("Not Found")
+        }
+        else{
+          throw new Error("Server Error")
+        }
+    })
+    .then((resBlob) => {
+        let data = URL.createObjectURL(resBlob);
+        this.setState(prevState => ({
+            photos: {
+                ...prevState.photos,
+                [contactId]: data,
+            },
+        }))
+    })
+    .catch((err) => {
+        console.log(err)
+    })
   }
   
   removeContact = async (contact) => {
