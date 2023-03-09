@@ -52,7 +52,7 @@ export default class Contacts extends Component {
     }
   }
 
-  removeContact = async (contact) => {
+  unblockContact = async (contact) => {
     const { id } = contact;
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/user/`+id+`/block`, {
@@ -87,9 +87,10 @@ export default class Contacts extends Component {
     >
       <Text style={styles.contactName}>{item.name}</Text>
       <TouchableOpacity
-        onPress={() => this.removeContact(item)}
+        style={styles.deleteButton}
+        onPress={() => this.unblockContact(item)}
       >
-        <Text>Unblock</Text>
+        <Text style={styles.deleteButtonText}>Unblock</Text>
       </TouchableOpacity>
     </View>
   );
@@ -128,6 +129,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333333',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
   },
   error: {
     color: '#FF3B30',
