@@ -48,7 +48,7 @@ export default class Contacts extends Component {
   
   removeContact = async (contact) => {
     const { id } = contact;
-    fetch(`http://localhost:3333/api/1.0.0/user/${id}/contact`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/`+id+`/contact`, {
       method: 'DELETE',
       headers: {
         'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
@@ -77,9 +77,8 @@ export default class Contacts extends Component {
       });
   }
 
-
   renderItem = ({ item }) => (
-    <View
+    <TouchableOpacity
       style={styles.contactContainer}
     >
       <Text style={styles.contactName}>{item.name}</Text>
@@ -90,8 +89,14 @@ export default class Contacts extends Component {
         >
           <Text style={styles.buttonText}>Delete</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.blockButton}
+          onPress={() => this.blockUser(item)}
+        >
+          <Text style={styles.buttonText}>Block</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
   
 
@@ -115,38 +120,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-},
-contactContainer: {
-flexDirection: 'row',
-justifyContent: 'space-between',
-alignItems: 'center',
-paddingHorizontal: 16,
-paddingVertical: 12,
-borderBottomColor: '#E0E0E0',
-borderBottomWidth: 1,
-},
-contactName: {
-fontSize: 16,
-fontWeight: 'bold',
-color: '#333333',
-},
-deleteButton: {
-backgroundColor: '#FF3B30',
-paddingHorizontal: 8,
-paddingVertical: 4,
-borderRadius: 4,
-},
-deleteButtonText: {
-color: '#FFFFFF',
-fontSize: 14,
-},
-error: {
-color: '#FF3B30',
-fontSize: 16,
-textAlign: 'center',
-marginTop: 16,
-},
-buttonContainer: {
+  },
+  contactContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1,
+  },
+  contactName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  deleteButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  error: {
+    color: '#FF3B30',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  buttonContainer: {
     flexDirection: 'row',
   },
   buttonText: {
@@ -160,5 +165,4 @@ buttonContainer: {
     borderRadius: 4,
     marginLeft: 8,
   },
-  
 });
