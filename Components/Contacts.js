@@ -77,6 +77,35 @@ export default class Contacts extends Component {
       });
   }
 
+  blockUser = async (contact) => {
+    const { id } = contact;
+    fetch(`http://localhost:3333/api/1.0.0/user/`+id+`/block`, {
+      method: 'POST',
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          this.getContacts(); // Call getContacts to update the contact list
+        } else if (response.status === 400) {
+          throw new Error("You can't block yourself as a contact");
+        } else if (response.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (response.status === 404) {
+          throw new Error('Not Found');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Error');
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: error.message });
+      });
+  };
+
   renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.contactContainer}
