@@ -72,13 +72,14 @@ export default class SearchUsers extends Component {
     const sections = [{ title: 'Users', data: users }];
   
     return (
-      <View>
-        <View>
+      <View style={styles.container}>
+        <View style={styles.searchBarContainer}>
           <TextInput
             placeholder="Search users"
+            style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}
           />
-          <Button title="Search" onPress={this.searchUsers}/>
+          <Button title="Search" onPress={this.searchUsers} style={styles.searchButton} />
         </View>
           <ScrollView>
             <SectionList
@@ -92,3 +93,66 @@ export default class SearchUsers extends Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#F5FCFF',
+  },
+  sectionHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    fontWeight: 'bold',
+  },
+  sectionHeader: {
+    fontSize: 18,
+  },
+  searchBarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+  },
+  searchButton: {
+    width: 80,
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  email: {
+    fontSize: 16,
+    color: '#666',
+  },
+  addContactButton: {
+    marginLeft: 10,
+  },
+  sectionHeader: {
+    backgroundColor: '#f2f2f2',
+    padding: 10,
+    fontWeight: 'bold',
+  },
+});
