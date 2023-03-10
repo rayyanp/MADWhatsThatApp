@@ -3,13 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet,ScrollView,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 
-export class SearchUsers extends Component {
+export default class SearchUsers extends Component {
   state = {
     query: '',
     searchIn: 'all',
     limit: 20,
     offset: 0,
     users: [],
+    showSuccess: false,
     error: ''
   };
 
@@ -63,6 +64,7 @@ export class SearchUsers extends Component {
       .then(response => {
         if (response.status === 200) {
           console.log('User added to contacts');
+          this.setState({ showSuccess: true });
         } else if (response.status === 400) {
           console.error('You cant add yourself as a contact');
         } else if (response.status === 401) {
@@ -100,7 +102,7 @@ export class SearchUsers extends Component {
 
 
   render() {
-    const { users, error } = this.state;
+    const { users, error, showSuccess } = this.state;
   
     const sections = [{ title: 'Users', data: users }];
   
@@ -120,6 +122,14 @@ export class SearchUsers extends Component {
           </View>
         ) : (
           <ScrollView>
+            {showSuccess && (
+              <View style={styles.successContainer}>
+                <TouchableOpacity onPress={() => this.setState({ showSuccess: false })} style={styles.closeButton}>
+                  <Ionicons name="close-circle" size={24} color="black" />
+                </TouchableOpacity>
+                <Text style={styles.successText}>User added to contacts!</Text>
+              </View>
+            )}
             <SectionList
               sections={sections}
               keyExtractor={(item) => item.user_id}
@@ -204,5 +214,23 @@ const styles = StyleSheet.create({
     color: '#ff0000',
     fontSize: 16,
   },
+  successContainer: {
+    backgroundColor: '#eaffea',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+    position: 'relative',
+  },
+  successText: {
+    color: '#008000',
+    fontSize: 16,
+    marginLeft: 10,
+    },
+  closeButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+  },
 });
   
+    
