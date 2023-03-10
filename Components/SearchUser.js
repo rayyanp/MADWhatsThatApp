@@ -1,14 +1,16 @@
-import React, {Component} from 'react';
-import {Text, View, TextInput, ScrollView, SectionList, Button} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet,ScrollView, SectionList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 
-export default class SearchUsers extends Component {
+export class SearchUsers extends Component {
   state = {
     query: '',
     searchIn: 'all',
     limit: 20,
     offset: 0,
     users: [],
+    error: ''
   };
 
   searchUsers = async () => {
@@ -42,7 +44,33 @@ export default class SearchUsers extends Component {
         if (data.length === 0) {
           this.setState({ error: 'No results' });
         } else {
-          this.setState({ users: data,});
+          this.setState({ users: data, error: '' });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
+  addContact = async (id) => {
+    fetch(`http://localhost:3333/api/1.0.0/user/`+id+`/contact`, {
+      method: 'POST',
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (response.status === 200) {
+          console.log('User added to contacts');
+        } else if (response.status === 400) {
+          console.error('You cant add yourself as a contact');
+        } else if (response.status === 401) {
+          console.error('Unauthorized');
+        } else if (response.status === 404) {
+          console.error('User not found');
+        } else if (response.status === 500) {
+          console.error('Server Error');
         }
       })
       .catch(error => {
@@ -51,23 +79,28 @@ export default class SearchUsers extends Component {
   };
 
   renderItem = ({ item }) => (
-    <View>
-      <View>
-        <Text>{item.name}</Text>
-        <Text>{item.email}</Text>
+    <View style={styles.item}>
+      <View style={styles.userInfo}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.email}>{item.email}</Text>
       </View>
+      <Button
+        title="Add Contact"
+        onPress={() => this.addContact(item.user_id)}
+        style={styles.addContactButton}
+      />
     </View>
   );
 
   renderSectionHeader = ({ section: { title } }) => (
-    <View>
-      <Text>{title}</Text>
+    <View style={styles.sectionHeaderContainer}>
+      <Text style={styles.sectionHeader}>{title}</Text>
     </View>
   );
 
 
   render() {
-    const { users } = this.state;
+    const { users, error } = this.state;
   
     const sections = [{ title: 'Users', data: users }];
   
@@ -81,6 +114,11 @@ export default class SearchUsers extends Component {
           />
           <Button title="Search" onPress={this.searchUsers} style={styles.searchButton} />
         </View>
+        {error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : (
           <ScrollView>
             <SectionList
               sections={sections}
@@ -89,11 +127,12 @@ export default class SearchUsers extends Component {
               renderSectionHeader={this.renderSectionHeader}
             />
           </ScrollView>
+        )}
       </View>
     );
   }
 }
-
+  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -155,4 +194,15 @@ const styles = StyleSheet.create({
     padding: 10,
     fontWeight: 'bold',
   },
+  errorContainer: {
+    padding: 10,
+    backgroundColor: '#ffeaea',
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  errorText: {
+    color: '#ff0000',
+    fontSize: 16,
+  },
 });
+  
