@@ -49,4 +49,46 @@ export default class SearchUsers extends Component {
         console.error(error);
       });
   };
+
+  renderItem = ({ item }) => (
+    <View>
+      <View>
+        <Text>{item.name}</Text>
+        <Text>{item.email}</Text>
+      </View>
+    </View>
+  );
+
+  renderSectionHeader = ({ section: { title } }) => (
+    <View>
+      <Text>{title}</Text>
+    </View>
+  );
+
+
+  render() {
+    const { users } = this.state;
+  
+    const sections = [{ title: 'Users', data: users }];
+  
+    return (
+      <View>
+        <View>
+          <TextInput
+            placeholder="Search users"
+            onChangeText={(query) => this.setState({ query })}
+          />
+          <Button title="Search" onPress={this.searchUsers}/>
+        </View>
+          <ScrollView>
+            <SectionList
+              sections={sections}
+              keyExtractor={(item) => item.user_id}
+              renderItem={this.renderItem}
+              renderSectionHeader={this.renderSectionHeader}
+            />
+          </ScrollView>
+      </View>
+    );
+  }
 }
