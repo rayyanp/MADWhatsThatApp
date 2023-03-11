@@ -55,4 +55,31 @@ export default class ChatListScreen extends Component {
       console.error(error);
     }
   };
-}  
+
+renderChatItem = ({ item }) => {
+  return (
+    <View
+    >
+      <View>
+        <Text>{item.name}</Text>
+      </View>
+    </View>
+  );
+};
+
+render() {
+  const { chats } = this.state;
+  return (
+    <View>
+      <View>
+        <Text>Chats</Text>
+      </View>
+      <FlatList
+        data={chats}
+        renderItem={this.renderChatItem}
+        keyExtractor={(item) => item.chat_id.toString()}
+      />
+    </View>
+  );
+}
+}
