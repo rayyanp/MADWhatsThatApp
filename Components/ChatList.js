@@ -71,11 +71,21 @@ renderChatItem = ({ item }) => {
 };
 
 render() {
-  const { chats } = this.state;
+  const { chats, newChatName } = this.state;
   return (
     <View>
       <View>
         <Text>Chats</Text>
+      </View>
+      <View>
+        <TextInput
+          onChangeText={(text) => this.setState({ newChatName: text })}
+          value={newChatName}
+          placeholder="Enter new chat name"
+        />
+        <TouchableOpacity onPress={this.createChat}>
+          <Text>Create</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={chats}
