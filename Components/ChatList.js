@@ -72,6 +72,11 @@ export default class ChatListScreen extends Component {
   
       if (response.status === 201) {
         const json = await response.json();
+        console.log(json);
+        // Clear the chat name input field
+        this.setState({ newChatName: '' });
+        // Refresh the chat list
+        this.fetchChats();
       } else if (response.status === 400) {
         throw new Error("Bad request");
       } else if (response.status === 401) {
@@ -103,9 +108,9 @@ renderChatItem = ({ item }) => {
 render() {
   const { chats, newChatName } = this.state;
   return (
-    <View>
-      <View>
-        <Text>Chats</Text>
+    <View style={styles.container}>
+    <View style={styles.headerContainer}>
+      <Text style={styles.header}>Chats</Text>
       </View>
       <View>
         <TextInput
@@ -126,3 +131,24 @@ render() {
   );
 }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+    paddingHorizontal: 15,
+    paddingTop: 30,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D8D8D8',
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});
