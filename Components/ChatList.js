@@ -58,12 +58,15 @@ export default class ChatListScreen extends Component {
 
 renderChatItem = ({ item }) => {
   return (
-    <View
+    <TouchableOpacity
+      onPress={() =>
+        this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
+      }
     >
       <View>
         <Text>{item.name}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
