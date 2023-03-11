@@ -4,6 +4,7 @@ import {Text, View} from 'react-native';
 export default class ChatListScreen extends Component {
   state = {
     chats: [],
+    newChatName: '',
   };
 
   componentDidMount() {
@@ -50,6 +51,35 @@ export default class ChatListScreen extends Component {
         throw new Error('Server Error');
       } else {
         throw new Error('Not Found');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  createChat = async () => {
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
+        method: 'POST',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: this.state.newChatName,
+        }),
+      });
+  
+      if (response.status === 201) {
+        const json = await response.json();
+      } else if (response.status === 400) {
+        throw new Error("Bad request");
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      } else {
+        throw new Error('Error');
       }
     } catch (error) {
       console.error(error);
