@@ -112,12 +112,13 @@ render() {
     <View style={styles.headerContainer}>
       <Text style={styles.header}>Chats</Text>
       </View>
-      <View>
-        <TextInput
-          onChangeText={(text) => this.setState({ newChatName: text })}
-          value={newChatName}
-          placeholder="Enter new chat name"
-        />
+      <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.newChatInput}
+            onChangeText={(text) => this.setState({ newChatName: text })}
+            value={newChatName}
+            placeholder="Enter new chat name"
+          />
         <TouchableOpacity onPress={this.createChat}>
           <Text>Create</Text>
         </TouchableOpacity>
@@ -150,5 +151,18 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  newChatInput: {
+    flex: 1,
+    padding: 10,
   },
 });
