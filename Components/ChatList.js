@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, TextInput, FlatList} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class ChatListScreen extends Component {
   state = {
@@ -23,25 +24,15 @@ export default class ChatListScreen extends Component {
       });
       if (response.status === 200) {
         const json = await response.json();
-        const chats = json.map(({ chat_id, name, creator, last_message }) => ({
-          chat_id,
-          name,
-          creator: {
-            user_id: creator.user_id,
-            first_name: creator.first_name,
-            last_name: creator.last_name,
-            email: creator.email,
-          },
-          last_message: last_message ? {
-            message_id: last_message.message_id,
-            timestamp: last_message.timestamp,
-            message: last_message.message,
-            author: {
-              user_id: last_message.author.user_id,
-              first_name: last_message.author.first_name,
-              last_name: last_message.author.last_name,
-              email: last_message.author.email,
-            },
+        const chats = json.map(item => ({
+          chat_id: item.chat_id,
+          name: item.name,
+          creator: item.creator,
+          last_message: item.last_message ? {
+            message_id: item.last_message.message_id,
+            timestamp: item.last_message.timestamp,
+            message: item.last_message.message,
+            author: item.last_message.author,
           } : null,
         }));
         this.setState({ chats });
@@ -56,7 +47,7 @@ export default class ChatListScreen extends Component {
       console.error(error);
     }
   };
-
+  
   createChat = async () => {
     try {
       const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
