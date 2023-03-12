@@ -85,10 +85,11 @@ export default class ChatListScreen extends Component {
 renderChatItem = ({ item }) => {
   return (
     <TouchableOpacity
-      onPress={() =>
-        this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
-      }
-    >
+    style={styles.chatItem}
+    onPress={() =>
+      this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
+    }
+  >
       <View>
         <Text>{item.name}</Text>
       </View>
@@ -171,5 +172,14 @@ const styles = StyleSheet.create({
   chatList: {
     flex: 1,
     marginTop: 10,
+  },
+  chatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    marginBottom: 10,
+    shadowColor: '#000',
   },
 });
