@@ -90,7 +90,7 @@ renderChatItem = ({ item }) => {
       this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
     }
   >
-      <View>
+      <View style={styles.chatInfo}>
         <Text>{item.name}</Text>
       </View>
     </TouchableOpacity>
@@ -181,5 +181,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     shadowColor: '#000',
+  },
+  chatInfo: {
+    flex: 1,
   },
 });
