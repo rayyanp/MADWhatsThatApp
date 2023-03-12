@@ -114,11 +114,12 @@ render() {
             <Text style={styles.createChatButtonText}>Create</Text>
           </TouchableOpacity>
         </View>
-      <FlatList
-        data={chats}
-        renderItem={this.renderChatItem}
-        keyExtractor={(item) => item.chat_id.toString()}
-      />
+        <FlatList
+          data={chats}
+          renderItem={this.renderChatItem}
+          keyExtractor={(item) => item.chat_id.toString()}
+          style={styles.chatList}
+        />
     </View>
   );
 }
@@ -166,5 +167,9 @@ const styles = StyleSheet.create({
   createChatButtonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
+  },
+  chatList: {
+    flex: 1,
+    marginTop: 10,
   },
 });
