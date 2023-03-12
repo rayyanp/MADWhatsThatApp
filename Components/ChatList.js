@@ -91,7 +91,7 @@ renderChatItem = ({ item }) => {
     }
   >
       <View style={styles.chatInfo}>
-        <Text>{item.name}</Text>
+      <Text style={styles.chatName}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -184,5 +184,9 @@ const styles = StyleSheet.create({
   },
   chatInfo: {
     flex: 1,
+  },
+  chatName: {
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
