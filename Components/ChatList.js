@@ -110,10 +110,10 @@ render() {
             value={newChatName}
             placeholder="Enter new chat name"
           />
-        <TouchableOpacity onPress={this.createChat}>
-          <Text>Create</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.createChatButton} onPress={this.createChat}>
+            <Text style={styles.createChatButtonText}>Create</Text>
+          </TouchableOpacity>
+        </View>
       <FlatList
         data={chats}
         renderItem={this.renderChatItem}
@@ -155,5 +155,16 @@ const styles = StyleSheet.create({
   newChatInput: {
     flex: 1,
     padding: 10,
+  },
+  createChatButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  createChatButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 });
