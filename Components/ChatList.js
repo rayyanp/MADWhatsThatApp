@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, TextInput, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 export default class ChatListScreen extends Component {
   state = {
@@ -98,6 +99,13 @@ renderChatItem = ({ item }) => {
               : 'No messages'}
           </Text>
       </View>
+      <View>
+          <Text style={styles.timestamp}>
+            {item.last_message
+              ? moment(item.last_message.timestamp).format('lll')
+              : ''}
+          </Text>
+        </View>
     </TouchableOpacity>
   );
 };
@@ -211,5 +219,9 @@ const styles = StyleSheet.create({
   },
   lastMessage: {
     color: '#757575',
+  },
+  timestamp: {
+    color: '#757575',
+    fontSize: 12,
   },
 });
