@@ -34,12 +34,17 @@ export default class ChatListScreen extends Component {
             timestamp: item.last_message.timestamp,
             message: item.last_message.message,
             author: item.last_message.author ? {
-              user_id: item.last_message.author?.user_id,
-              first_name: item.last_message.author?.first_name,
-              last_name: item.last_message.author?.last_name,
-              email: item.last_message.author?.email,
+              user_id: item.last_message.author.user_id,
+              first_name: item.last_message.author.first_name,
+              last_name: item.last_message.author.last_name,
+              email: item.last_message.author.email,
             } : null,
-          } : null,          
+          } : {
+            message_id: null,
+            timestamp: null,
+            message: 'No messages',
+            author: null,
+          }                
         }));        
         this.setState({ chats });
       } else if (response.status === 401) {
