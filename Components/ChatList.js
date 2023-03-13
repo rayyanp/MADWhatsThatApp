@@ -92,6 +92,11 @@ renderChatItem = ({ item }) => {
   >
       <View style={styles.chatInfo}>
       <Text style={styles.chatName}>{item.name}</Text>
+      <Text style={styles.lastMessage}>
+            {item.last_message
+              ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
+              : 'No messages'}
+          </Text>
       </View>
     </TouchableOpacity>
   );
@@ -203,5 +208,8 @@ const styles = StyleSheet.create({
   chatName: {
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  lastMessage: {
+    color: '#757575',
   },
 });
