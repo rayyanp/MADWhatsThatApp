@@ -9,21 +9,18 @@ export default class SearchUsers extends Component {
     searchIn: 'all',
     limit: 20,
     offset: 0,
-    page: 1,
     users: [],
     showSuccess: false,
     error: ''
   };
 
   searchUsers = async () => {
-    const { query, searchIn, limit, page } = this.state;
+    const { query, searchIn, limit, offset } = this.state;
 
     if (!query) {
       this.setState({ error: 'Please enter a search query' });
       return;
     }
-
-    const offset = (page - 1) * limit;
 
     fetch(`http://localhost:3333/api/1.0.0/search?q=`+query+`&search_in=`+searchIn+`&limit=`+limit+`&offset=`+offset, {
       method: 'GET',
@@ -105,7 +102,7 @@ export default class SearchUsers extends Component {
 
 
   render() {
-    const { users, error, showSuccess, limit, offset } = this.state;
+    const { users, error, showSuccess } = this.state;
   
     const sections = [{ title: 'Users', data: users }];
   
@@ -139,17 +136,6 @@ export default class SearchUsers extends Component {
               renderItem={this.renderItem}
               renderSectionHeader={this.renderSectionHeader}
             />
-          {users.length > 0 && (
-            <View style={styles.paginationContainer}>
-              {offset > 0 && (
-                <Button title="Prev" onPress={() => this.setState({ offset: offset - limit }, this.searchUsers)} />
-              )}
-              {users.length === limit && (
-                <Button title="Next" onPress={() => this.setState({ offset: offset + limit }, this.searchUsers)} />
-              )}
-            </View>
-          )}
-
           </ScrollView>
         )}
       </View>
