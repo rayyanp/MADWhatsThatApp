@@ -105,7 +105,7 @@ export default class SearchUsers extends Component {
 
 
   render() {
-    const { users, error, showSuccess } = this.state;
+    const { users, error, showSuccess, limit, offset } = this.state;
   
     const sections = [{ title: 'Users', data: users }];
   
@@ -139,13 +139,17 @@ export default class SearchUsers extends Component {
               renderItem={this.renderItem}
               renderSectionHeader={this.renderSectionHeader}
             />
-              {users.length > 0 && (
-            <View>
+          {users.length > 0 && (
+            <View style={styles.paginationContainer}>
+              {offset > 0 && (
+                <Button title="Prev" onPress={() => this.setState({ offset: offset - limit }, this.searchUsers)} />
+              )}
               {users.length === limit && (
                 <Button title="Next" onPress={() => this.setState({ offset: offset + limit }, this.searchUsers)} />
               )}
             </View>
           )}
+
           </ScrollView>
         )}
       </View>
