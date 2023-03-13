@@ -126,6 +126,7 @@ export default class SearchUsers extends Component {
         <View style={styles.searchBarContainer}>
           <TextInput
             placeholder="Search users by first name, last name or email"
+            placeholderTextColor="#C4C4C4"
             style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}
           />
