@@ -33,9 +33,14 @@ export default class ChatListScreen extends Component {
             message_id: item.last_message.message_id,
             timestamp: item.last_message.timestamp,
             message: item.last_message.message,
-            author: item.last_message.author,
-          } : null,
-        }));
+            author: item.last_message.author ? {
+              user_id: item.last_message.author?.user_id,
+              first_name: item.last_message.author?.first_name,
+              last_name: item.last_message.author?.last_name,
+              email: item.last_message.author?.email,
+            } : null,
+          } : null,          
+        }));        
         this.setState({ chats });
       } else if (response.status === 401) {
         throw new Error('Unauthorised');
@@ -83,32 +88,33 @@ export default class ChatListScreen extends Component {
     }
   };
 
-renderChatItem = ({ item }) => {
-  return (
-    <TouchableOpacity
-    style={styles.chatItem}
-    onPress={() =>
-      this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
-    }
-  >
-      <View style={styles.chatInfo}>
-      <Text style={styles.chatName}>{item.name}</Text>
-      <Text style={styles.lastMessage}>
+  renderChatItem = ({ item }) => {
+    return (
+      <TouchableOpacity
+        style={styles.chatItem}
+        onPress={() =>
+          this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
+        }
+      >
+        <View style={styles.chatInfo}>
+          <Text style={styles.chatName}>{item.name}</Text>
+          <Text style={styles.lastMessage}>
             {item.last_message
-              ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
+              ? `${item.last_message.author ? item.last_message.author.first_name : ''} ${item.last_message.author ? item.last_message.author.last_name : ''}: ${item.last_message.message}`
               : 'No messages'}
           </Text>
-      </View>
-      <View>
+        </View>
+        <View>
           <Text style={styles.timestamp}>
-            {item.last_message
+            {item.last_message && item.last_message.timestamp
               ? moment(item.last_message.timestamp).format('lll')
               : ''}
           </Text>
         </View>
-    </TouchableOpacity>
-  );
-};
+      </TouchableOpacity>
+    );
+  };  
+  
 
 render() {
   const { chats, newChatName } = this.state;
