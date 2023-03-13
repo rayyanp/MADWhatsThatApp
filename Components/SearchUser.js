@@ -53,6 +53,14 @@ export default class SearchUsers extends Component {
       });
   };
 
+  nextPage = async () => {
+    const { query, searchIn, limit, offset } = this.state;
+    const newOffset = offset + limit;
+    await this.setState({ offset: newOffset });
+    this.searchUsers();
+  };
+  
+
   addContact = async (id) => {
     fetch(`http://localhost:3333/api/1.0.0/user/`+id+`/contact`, {
       method: 'POST',
