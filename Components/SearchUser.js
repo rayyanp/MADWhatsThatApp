@@ -252,6 +252,10 @@ const styles = StyleSheet.create({
     top: 5,
     right: 5,
   },
+  buttonContainer: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
 });
   
     
