@@ -100,20 +100,21 @@ export default class ChatListScreen extends Component {
           <Text style={styles.chatName}>{item.name}</Text>
           <Text style={styles.lastMessage}>
             {item.last_message
-              ? `${item.last_message.author ? item.last_message.author.first_name : ''} ${item.last_message.author ? item.last_message.author.last_name : ''}: ${item.last_message.message}`
+              ? `${item.last_message.author?.first_name ?? ''} ${item.last_message.author?.last_name ?? ''}: ${item.last_message.message ?? ''}`
               : 'No messages'}
           </Text>
         </View>
         <View>
           <Text style={styles.timestamp}>
-            {item.last_message && item.last_message.timestamp
+            {item.last_message?.timestamp
               ? moment(item.last_message.timestamp).format('lll')
               : ''}
           </Text>
         </View>
       </TouchableOpacity>
     );
-  };  
+  };
+  
   
 
 render() {
