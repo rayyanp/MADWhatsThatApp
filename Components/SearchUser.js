@@ -152,6 +152,9 @@ export default class SearchUsers extends Component {
               renderSectionHeader={this.renderSectionHeader}
             />
             <View style={styles.buttonContainer}>
+              <Button title="Previous Page" onPress={this.previousPage} disabled={this.state.offset === 0} />
+            </View>
+            <View style={styles.buttonContainer}>
               <Button title="Next Page" onPress={this.nextPage} disabled={this.state.users.length < this.state.limit} />
             </View>
           </ScrollView>
