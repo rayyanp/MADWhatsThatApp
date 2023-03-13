@@ -139,6 +139,13 @@ export default class SearchUsers extends Component {
               renderItem={this.renderItem}
               renderSectionHeader={this.renderSectionHeader}
             />
+              {users.length > 0 && (
+            <View>
+              {users.length === limit && (
+                <Button title="Next" onPress={() => this.setState({ offset: offset + limit }, this.searchUsers)} />
+              )}
+            </View>
+          )}
           </ScrollView>
         )}
       </View>
