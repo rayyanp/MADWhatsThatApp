@@ -9,18 +9,21 @@ export default class SearchUsers extends Component {
     searchIn: 'all',
     limit: 20,
     offset: 0,
+    page: 1,
     users: [],
     showSuccess: false,
     error: ''
   };
 
   searchUsers = async () => {
-    const { query, searchIn, limit, offset } = this.state;
+    const { query, searchIn, limit, page } = this.state;
 
     if (!query) {
       this.setState({ error: 'Please enter a search query' });
       return;
     }
+
+    const offset = (page - 1) * limit;
 
     fetch(`http://localhost:3333/api/1.0.0/search?q=`+query+`&search_in=`+searchIn+`&limit=`+limit+`&offset=`+offset, {
       method: 'GET',
