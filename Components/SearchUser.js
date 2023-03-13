@@ -56,7 +56,14 @@ export default class SearchUsers extends Component {
   nextPage = async () => {
     const { query, searchIn, limit, offset } = this.state;
     const newOffset = offset + limit;
-    await this.setState({ offset: newOffset });
+    this.setState({ offset: newOffset });
+    this.searchUsers();
+  };
+
+  previousPage = async () => {
+    const { query, searchIn, limit, offset } = this.state;
+    const newOffset = offset - limit;
+    this.setState({ offset: newOffset < 0 ? 0 : newOffset });
     this.searchUsers();
   };
   
