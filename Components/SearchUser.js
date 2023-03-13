@@ -144,6 +144,9 @@ export default class SearchUsers extends Component {
               renderItem={this.renderItem}
               renderSectionHeader={this.renderSectionHeader}
             />
+            <View style={styles.buttonContainer}>
+              <Button title="Next Page" onPress={this.nextPage} disabled={this.state.users.length < this.state.limit} />
+            </View>
           </ScrollView>
         )}
       </View>
