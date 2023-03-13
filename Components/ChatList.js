@@ -25,27 +25,27 @@ export default class ChatListScreen extends Component {
       });
       if (response.status === 200) {
         const json = await response.json();
-        const chats = json.map(item => ({
-          chat_id: item.chat_id,
-          name: item.name,
-          creator: item.creator,
-          last_message: item.last_message ? {
-            message_id: item.last_message.message_id,
-            timestamp: item.last_message.timestamp,
-            message: item.last_message.message,
-            author: item.last_message.author ? {
-              user_id: item.last_message.author.user_id,
-              first_name: item.last_message.author.first_name,
-              last_name: item.last_message.author.last_name,
-              email: item.last_message.author.email,
-            } : null,
-          } : {
-            message_id: null,
-            timestamp: null,
-            message: 'No messages',
-            author: null,
-          }                
-        }));        
+        const chats = json.map((item) => {
+          let lastMessage = item.last_message;
+          if (lastMessage && Object.keys(lastMessage).length > 0) {
+            lastMessage = {
+              message_id: lastMessage.message_id,
+              timestamp: lastMessage.timestamp,
+              message: lastMessage.message,
+              author: {
+                user_id: lastMessage.author.user_id,
+                first_name: lastMessage.author.first_name,
+                last_name: lastMessage.author.last_name,
+                email: lastMessage.author.email,
+              },
+            };
+          } 
+          return {
+            chat_id: item.chat_id,
+            name: item.name,
+            last_message: lastMessage,
+          };
+        });
         this.setState({ chats });
       } else if (response.status === 401) {
         throw new Error('Unauthorised');
@@ -105,7 +105,7 @@ export default class ChatListScreen extends Component {
           <Text style={styles.chatName}>{item.name}</Text>
           <Text style={styles.lastMessage}>
             {item.last_message
-              ? `${item.last_message.author?.first_name ?? ''} ${item.last_message.author?.last_name ?? ''}: ${item.last_message.message ?? ''}`
+              ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
               : 'No messages'}
           </Text>
         </View>
