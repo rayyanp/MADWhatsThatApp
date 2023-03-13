@@ -56,14 +56,14 @@ export default class SearchUsers extends Component {
   nextPage = async () => {
     const { query, searchIn, limit, offset } = this.state;
     const newOffset = offset + limit;
-    this.setState({ offset: newOffset });
+    await this.setState({ offset: newOffset });
     this.searchUsers();
   };
-
+  
   previousPage = async () => {
     const { query, searchIn, limit, offset } = this.state;
     const newOffset = offset - limit;
-    this.setState({ offset: newOffset < 0 ? 0 : newOffset });
+    await this.setState({ offset: newOffset < 0 ? 0 : newOffset });
     this.searchUsers();
   };
   
@@ -125,7 +125,7 @@ export default class SearchUsers extends Component {
       <View style={styles.container}>
         <View style={styles.searchBarContainer}>
           <TextInput
-            placeholder="Search users"
+            placeholder="Search users by first name, last name or email"
             style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}
           />
@@ -265,4 +265,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-  
