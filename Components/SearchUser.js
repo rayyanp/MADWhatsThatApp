@@ -83,7 +83,7 @@ export default class SearchUsers extends Component {
   renderItem = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.userInfo}>
-        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
         <Text style={styles.email}>{item.email}</Text>
       </View>
       <Button
@@ -92,7 +92,7 @@ export default class SearchUsers extends Component {
         style={styles.addContactButton}
       />
     </View>
-  );
+  );  
 
   renderSectionHeader = ({ section: { title } }) => (
     <View style={styles.sectionHeaderContainer}>
