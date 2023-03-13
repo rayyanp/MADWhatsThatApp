@@ -39,7 +39,9 @@ export default class ChatListScreen extends Component {
                 email: lastMessage.author.email,
               },
             };
-          } 
+          } else {
+            lastMessage = null;
+          }
           return {
             chat_id: item.chat_id,
             name: item.name,
