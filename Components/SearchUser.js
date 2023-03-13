@@ -151,11 +151,13 @@ export default class SearchUsers extends Component {
               renderItem={this.renderItem}
               renderSectionHeader={this.renderSectionHeader}
             />
-            <View style={styles.buttonContainer}>
-              <Button title="Previous Page" onPress={this.previousPage} disabled={this.state.offset === 0} />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button title="Next Page" onPress={this.nextPage} disabled={this.state.users.length < this.state.limit} />
+            <View style={styles.paginationContainer}>
+              <View style={styles.buttonContainer}>
+                <Button title="Previous Page" onPress={this.previousPage} disabled={this.state.offset === 0} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title="Next Page" onPress={this.nextPage} disabled={this.state.users.length < this.state.limit} />
+              </View>
             </View>
           </ScrollView>
         )}
@@ -252,10 +254,15 @@ const styles = StyleSheet.create({
     top: 5,
     right: 5,
   },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   buttonContainer: {
     flex: 1,
     marginHorizontal: 5,
   },
 });
   
-    
