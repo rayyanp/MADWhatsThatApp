@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet,ScrollView, SectionList } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet,ScrollView, SectionList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 

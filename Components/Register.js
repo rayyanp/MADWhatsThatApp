@@ -10,9 +10,11 @@ export default class RegisterScreen extends Component {
     last_name: '',
     email: '',
     password: '',
+    confirm_password: '',
     error: '',
     submitted: false,
-};
+  };
+  
 this._onPressButton = this._onPressButton.bind(this);
 }
 
@@ -24,11 +26,12 @@ _onPressButton() {
       this.state.first_name &&
       this.state.last_name &&
       this.state.email &&
-      this.state.password
+      this.state.password &&
+      this.state.confirm_password
     )
   ) {
     this.setState({
-      error: 'Must enter first name, last name, email and password',
+      error: 'Must enter first name, last name, email, password, and confirm password',
     });
     return;
   }
@@ -46,6 +49,11 @@ _onPressButton() {
       error:
         "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)",
     });
+    return;
+  }
+
+  if (this.state.password !== this.state.confirm_password) {
+    this.setState({ error: 'Passwords do not match' });
     return;
   }
 
@@ -68,6 +76,7 @@ _onPressButton() {
           last_name: '',
           email: '',
           password: '',
+          confirm_password: '',
           submitted: false,
           success: true,
         });
@@ -84,6 +93,7 @@ _onPressButton() {
       });
     });
 }
+
 
 render() {
   return (
@@ -113,6 +123,13 @@ render() {
         secureTextEntry={true}
         onChangeText={(text) => this.setState({ password: text })}
         value={this.state.password}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        secureTextEntry={true}
+        onChangeText={(text) => this.setState({ confirm_password: text })}
+        value={this.state.confirm_password}
       />
       {this.state.error !== '' && (
         <Text style={styles.error}>{this.state.error}</Text>
