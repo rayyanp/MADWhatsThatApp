@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet,ScrollView, SectionList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class SearchUsers extends Component {
   state = {
@@ -130,7 +131,7 @@ export default class SearchUsers extends Component {
             style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}
           />
-          <Button title="Search" onPress={this.searchUsers} style={styles.searchButton} />
+          <Icon name="search" size={20} color="#fff" onPress={this.searchUsers} style={styles.searchButton} />
         </View>
         {error ? (
           <View style={styles.errorContainer}>
@@ -199,7 +200,20 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchButton: {
-    width: 80,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   item: {
     flexDirection: 'row',

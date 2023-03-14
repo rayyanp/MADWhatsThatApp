@@ -185,13 +185,13 @@ render() {
           style={styles.viewBlockedButton}
           onPress={() => this.props.navigation.navigate('Blocked')}
         >
-          <Text style={styles.viewBlockedText}>View Blocked Users</Text>
+          <Text style={styles.viewBlockedText}>Blocked</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.viewBlockedButton}
+          style={styles.searchButton}
           onPress={() => this.props.navigation.navigate('SearchContacts')}
         >
-          <Text style={styles.viewBlockedText}>View Blocked Users</Text>
+          <Icon name="search" size={20} color="#fff" />
         </TouchableOpacity>
       </View>
       {error ? (
@@ -332,5 +332,21 @@ const styles = StyleSheet.create({
   noPhotoText: {
     fontSize: 12,
     color: '#999',
+  },
+  searchButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
