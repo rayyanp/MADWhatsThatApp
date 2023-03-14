@@ -187,12 +187,6 @@ render() {
         >
           <Text style={styles.viewBlockedText}>View Blocked Users</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.viewBlockedButton}
-          onPress={() => this.props.navigation.navigate('SearchContacts')}
-        >
-          <Text style={styles.viewBlockedText}>View Blocked Users</Text>
-        </TouchableOpacity>
       </View>
       {error ? (
         <View style={styles.errorContainer}>

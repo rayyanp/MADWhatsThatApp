@@ -9,6 +9,7 @@ import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
 import Blocked from './Blocked';
 import Contacts from './Contacts';
+import SearchContacts from './SearchContacts';
 import Profile from './Profile';
 import SearchUser from './SearchUser';
 import CameraSend from './CameraSend';
@@ -110,6 +111,7 @@ function ContactsListNav() {
   return (
     <Stack.Navigator initialRouteName="Contacts">
       <Stack.Screen name="Contacts" component={Contacts} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchContacts" component={SearchContacts} />
       <Stack.Screen name="Blocked" component={Blocked} />
     </Stack.Navigator>
   );
