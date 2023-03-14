@@ -176,7 +176,7 @@ export default class ProfileScreen extends Component {
             style={styles.cameraButton}
             onPress={() => this.props.navigation.navigate('CameraSend')}
           >
-            <Text style={styles.buttonText}>Take a new Profile Picture</Text>
+            <Text style={styles.buttonText}>Change Profile Picture</Text>
           </TouchableOpacity>
             <View style={styles.profileContainer}>
               <Text style={styles.name}>

@@ -61,8 +61,6 @@ export default class SearchContacts extends Component {
     await this.setState({ offset: newOffset < 0 ? 0 : newOffset });
     this.searchContacts();
   };
-  
-
 
   renderItem = ({ item }) => (
     <View style={styles.item}>
