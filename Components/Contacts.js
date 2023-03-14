@@ -60,7 +60,7 @@ export default class Contacts extends Component {
   }
 
 
-  searchUsers = async () => {
+  searchContacts = async () => {
     const { query, searchIn, limit, offset } = this.state;
 
     if (!query) {
@@ -253,7 +253,7 @@ render() {
             style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}
           />
-          <Button title="Search" onPress={this.searchUsers} style={styles.searchButton} />
+          <Button title="Search" onPress={this.searchContacts} style={styles.searchButton} />
         </View>
       {error ? (
         <View style={styles.errorContainer}>

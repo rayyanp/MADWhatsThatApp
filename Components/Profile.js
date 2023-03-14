@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as EmailValidator from 'email-validator';
 
 export default class ProfileScreen extends Component {
   state = {
@@ -16,11 +17,19 @@ export default class ProfileScreen extends Component {
     loading: true,
   };
 
-  componentDidMount() {
-    this.props.navigation.addListener('focus', () => {
-    this.fetchUserProfile();
-    this.get_profile_image();
-  });
+  async componentDidMount() {
+    await this.fetchUserProfile();
+    await this.get_profile_image();
+  
+    // Pre-populate the form with existing details
+    this.setState({
+      editedUser: {
+        first_name: this.state.user.first_name,
+        last_name: this.state.user.last_name,
+        email: this.state.user.email,
+        password: '',
+      },
+    });
   }
 
   fetchUserProfile = async () => {
@@ -79,15 +88,26 @@ export default class ProfileScreen extends Component {
   saveProfile = async () => {
     const user_id = await AsyncStorage.getItem('whatsthat_user_id');
     const { editedUser } = this.state;
-
-    // Remove empty fields from the editedUser object
-    const updatedFields = {};
-    for (const key in editedUser) {
-      if (editedUser[key] !== '') {
-        updatedFields[key] = editedUser[key];
-      }
+  
+    const updatedFields = Object.fromEntries(Object.entries(editedUser).filter(([key, value]) => value !== ''));
+  
+    if (editedUser.email && !EmailValidator.validate(editedUser.email)) {
+      this.setState({ errorMessage: 'Must enter valid email' });
+      return;
     }
 
+    const PASSWORD_REGEX = new RegExp(
+      '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$',
+    );
+    if (editedUser.password && !PASSWORD_REGEX.test(editedUser.password)) {
+      this.setState({
+        errorMessage:
+          "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)",
+      });
+      return;
+    }
+
+  
     fetch(`http://localhost:3333/api/1.0.0/user/`+user_id, {
       method: 'PATCH',
       headers: {
@@ -114,15 +134,14 @@ export default class ProfileScreen extends Component {
         }
       })
       .then(user => {
-        this.setState({ user }, () => {
-          this.fetchUserProfile(); // Call fetchUserProfile again to update state with the latest user details
-        });
+        this.setState({ user }, this.fetchUserProfile);
       })
       .catch(error => {
         console.error(error);
         this.setState({ errorMessage: error.message });
       });
   };
+  
 
   userInput = (key, value) => {
     this.setState({
