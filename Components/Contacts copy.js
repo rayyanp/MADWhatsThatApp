@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SectionList, Image, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SectionList, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -12,9 +12,6 @@ export default class Contacts extends Component {
     contacts: [],
     photos: {}, // map of contact IDs to photo URLs
     error: null,
-    searchIn: 'contacts',
-    limit: 20,
-    offset: 0,
   };
 
   async componentDidMount() {
@@ -58,61 +55,6 @@ export default class Contacts extends Component {
         this.setState({ error: error.message });
       });
   }
-
-
-  searchUsers = async () => {
-    const { query, searchIn, limit, offset } = this.state;
-
-    if (!query) {
-      this.setState({ error: 'Please enter a search query' });
-      return;
-    }
-
-    fetch(`http://localhost:3333/api/1.0.0/search?q=`+query+`&search_in=`+searchIn+`&limit=`+limit+`&offset=`+offset, {
-      method: 'GET',
-      headers: {
-        'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
-        'Accept': 'application/json',
-      },
-    })
-      .then(response => {
-        if (response.status === 200) {
-          console.log('OK');
-        } else if (response.status === 400) {
-          console.error('Bad Request');
-        } else if (response.status === 401) {
-          console.error('Unauthorized');
-        } else if (response.status === 500) {
-          console.error('Server Error');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.length === 0) {
-          this.setState({ error: 'No results' });
-        } else {
-          this.setState({ users: data, error: '' });
-        }
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  };
-
-  nextPage = async () => {
-    const { query, searchIn, limit, offset } = this.state;
-    const newOffset = offset + limit;
-    await this.setState({ offset: newOffset });
-    this.searchUsers();
-  };
-  
-  previousPage = async () => {
-    const { query, searchIn, limit, offset } = this.state;
-    const newOffset = offset - limit;
-    await this.setState({ offset: newOffset < 0 ? 0 : newOffset });
-    this.searchUsers();
-  };
-  
 
   get_profile_image = async (contactId) => {
     const session_token = await AsyncStorage.getItem('whatsthat_session_token');
@@ -246,15 +188,6 @@ render() {
           <Text style={styles.viewBlockedText}>View Blocked Users</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.searchBarContainer}>
-          <TextInput
-            placeholder="Search users by first name, last name or email"
-            placeholderTextColor="#C4C4C4"
-            style={styles.searchInput}
-            onChangeText={(query) => this.setState({ query })}
-          />
-          <Button title="Search" onPress={this.searchUsers} style={styles.searchButton} />
-        </View>
       {error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
