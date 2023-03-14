@@ -87,7 +87,7 @@ export default class SearchContacts extends Component {
       <View style={styles.container}>
         <View style={styles.searchBarContainer}>
           <TextInput
-            placeholder="Search contacts by first name, last name or email"
+            placeholder="Search contacts by first name, last name or email."
             placeholderTextColor="#C4C4C4"
             style={styles.searchInput}
             onChangeText={(query) => this.setState({ query })}

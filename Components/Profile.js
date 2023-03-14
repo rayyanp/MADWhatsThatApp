@@ -106,7 +106,6 @@ export default class ProfileScreen extends Component {
       });
       return;
     }
-
   
     fetch(`http://localhost:3333/api/1.0.0/user/`+user_id, {
       method: 'PATCH',
@@ -142,7 +141,6 @@ export default class ProfileScreen extends Component {
       });
   };
   
-
   userInput = (key, value) => {
     this.setState({
       editedUser: {
