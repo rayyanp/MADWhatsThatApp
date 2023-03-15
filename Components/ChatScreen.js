@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class ChatScreen extends Component {
 
@@ -53,7 +56,21 @@ export default class ChatScreen extends Component {
 };
 
  
-  render() {
+render() {
+  const { chatData, error  } = this.state;
+  const { chatId } = this.props.route.params;  
+
+  if (error) {
+    return (
+      <View>
+        <TouchableOpacity onPress={() => this.setState({ error: null })}>
+          <Ionicons name="close-circle" size={24} color="black" />
+        </TouchableOpacity>
+        {error.message && <Text>{error.message}</Text>}
+      </View>
+    );
+  }  
+
     return (
       <View
         style={{
