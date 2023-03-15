@@ -238,6 +238,7 @@ return (
                 </View>
               </>
             )}
+            <View style={styles.horizontalLine} />
           </View>
         ))}
       </ScrollView>
@@ -392,5 +393,10 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#fff',
     marginLeft: 10,
-  },                           
+  }, 
+  horizontalLine: {
+    borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+  },                            
 });
