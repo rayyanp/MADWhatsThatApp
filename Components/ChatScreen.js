@@ -58,12 +58,12 @@ export default class ChatScreen extends Component {
 
  
 render() {
-  const { chatData, error, isLoading  } = this.state;
+  const { chatData, error, isLoading } = this.state;
   const { chatId } = this.props.route.params;  
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View>
         <ActivityIndicator size="large" color="#6646ee" />
       </View>
     );
@@ -78,17 +78,17 @@ render() {
         {error.message && <Text>{error.message}</Text>}
       </View>
     );
-  }  
-
+  }
+  
+    const { messages } = chatData;
+  
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text>ChatScreen</Text>
+      <View>
+        {messages.map((message) => (
+          <Text>{message.message}</Text>
+        ))}
       </View>
     );
   }
 }
+  
