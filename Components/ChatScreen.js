@@ -79,16 +79,18 @@ render() {
       </View>
     );
   }
-  
-    const { messages } = chatData;
-  
-    return (
-      <View>
-        {messages.map((message) => (
-          <Text>{message.message}</Text>
-        ))}
-      </View>
-    );
-  }
+
+  const { messages } = chatData;
+
+  // Sort messages by timestamp in ascending order
+  const orderedMessages = messages.sort((x, y) => x.timestamp - y.timestamp);
+
+  return (
+    <View>
+      {orderedMessages.map((message) => (
+        <Text>{message.message}</Text>
+      ))}
+    </View>
+  );
 }
-  
+}
