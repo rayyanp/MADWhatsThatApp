@@ -3,6 +3,14 @@ import {Text, View} from 'react-native';
 
 export default class ChatScreen extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      chatData: null ,
+      error: null,
+    };
+  }
+
   componentDidMount() {
     this.props.navigation.addListener('focus', () => {
     this.fetchChatData();
@@ -26,6 +34,7 @@ export default class ChatScreen extends Component {
 
     if (response.status === 200) {
       const data = await response.json();
+      this.setState({ chatData: data });
   } else if (response.status === 401) {
     throw new Error('Unauthorized');
   } else if (response.status === 403) {
@@ -39,6 +48,7 @@ export default class ChatScreen extends Component {
   }
   } catch (error) {
     console.error('Error fetching chat data:', error);
+    this.setState({ error });
   }
 };
 
