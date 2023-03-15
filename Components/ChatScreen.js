@@ -13,14 +13,17 @@ export default class ChatScreen extends Component {
       error: null,
       isLoading: true,
       textMessage: '',
+      editMessageId: null,
+      editTextMessage: '',
+      isEditing: false,
     };
   }
 
-  componentDidMount() {
-    this.props.navigation.addListener('focus', () => {
-    this.fetchChatData();
-  });
- }
+componentDidMount() {
+  this.props.navigation.addListener('focus', () => {
+  this.fetchChatData();
+});
+}
 
  fetchChatData = async () => {
   const { chatId } = this.props.route.params;
@@ -98,86 +101,245 @@ sendMessage = async () => {
   }
 };
 
-render() {
-  const { chatData, error, isLoading, textMessage } = this.state;
-
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" color="#6646ee" />
-      </View>
-    );
-  }  
-
-  if (error) {
-    return (
-      <View>
-        <TouchableOpacity onPress={() => this.setState({ error: null })}>
-          <Ionicons name="close-circle" size={24} color="black" />
-        </TouchableOpacity>
-        {error.message && <Text>{error.message}</Text>}
-      </View>
-    );
-  }
-
-  const { messages } = chatData;
-
-  // Sort messages by timestamp in ascending order
-  const orderedMessages = messages.sort((x, y) => x.timestamp - y.timestamp);
-
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={{ height: '80%' }}>
-        <ScrollView
-          ref={(scrollView) => {
-            this.scrollView = scrollView;
-          }}
-          onContentSizeChange={() =>
-            this.scrollView.scrollToEnd({ animated: true })
+editMessage = async () => {
+  const { chatId } = this.props.route.params;
+  const { editMessageId, editTextMessage } = this.state;
+  this.setState({ isEditing: true });
+  
+  try {
+    const response = await fetch(
+      `http://localhost:3333/api/1.0.0/chat/`+chatId+`/message/`+editMessageId,
+      {
+        method: 'PATCH',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: editTextMessage }),
+      });
+      
+      if (response.status === 200) {
+        this.setState({
+          editMessageId: null,
+          editTextMessage: '',
+          isEditing: false,
+        });
+        this.fetchChatData(); // Fetch chat data again to display the new message
+      } else if (response.status === 400) {
+        throw new Error("Bad request");
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 403) {
+        throw new Error('Forbidden, you cannot edit someone elses message');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      } else {
+        throw new Error('Error');
+      }
+    } catch (error) {
+      console.error('Error editing message:', error);
+      this.setState({ isEditing: false, error });
     }
-        >
-          {orderedMessages.map((message) => (
-            <View key={message.message_id}>
-              <View>
-                <Text>
+  };
+    
+render() {
+const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
+
+if (isLoading) {
+return (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size="large" color="#6646ee" />
+  </View>
+);
+}
+
+if (error) {
+return (
+  <View style={styles.errorContainer}>
+    <TouchableOpacity style={styles.closeButton} onPress={() => this.setState({ error: null })}>
+      <Ionicons name="close-circle" size={24} color="black" />
+    </TouchableOpacity>
+    {error.message && <Text style={styles.errorText}>{error.message}</Text>}
+  </View>
+);
+}  
+
+return (
+  <View style={styles.container}>
+    <View style={styles.chatContainer}>
+      <ScrollView
+        ref={(scrollView) => {
+          this.scrollView = scrollView;
+        }}
+        onContentSizeChange={() =>
+          this.scrollView.scrollToEnd({ animated: true })
+        }
+      >
+        {chatData.messages.sort((x, y) => x.timestamp - y.timestamp).map((message) => (
+          <View key={message.message_id}>
+            <View style={styles.messageHeader}>
+              {message.author && (
+                <Text style={styles.messageSender}>
                   {message.author.first_name} {message.author.last_name}
                 </Text>
-                <Text>
-                  {new Date(message.timestamp).toLocaleTimeString()}
-                </Text>
+              )}
+              <Text style={styles.messageTimestamp}>
+                {new Date(message.timestamp * 1000).toLocaleTimeString()}
+              </Text>
+            </View>
+            {editMessageId === message.message_id ? (
+              <View style={styles.editMessageContainer}>
+                <TextInput
+                  style={styles.editMessageInput}
+                  onChangeText={(text) =>
+                    this.setState({ editTextMessage: text })
+                  }
+                  value={editTextMessage}
+                />
+                <TouchableOpacity
+                  style={styles.editMessageButton}
+                  onPress={() => {
+                    this.editMessage();
+                  }}
+                >
+                  {isEditing ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Icon name="save" size={24} color="green" />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.editMessageButton}
+                  onPress={() => {
+                    this.setState({ editMessageId: null, editTextMessage: "" });
+                  }}
+                  disabled={isEditing}
+                >
+                  <Icon name="close" size={24} color="black" />
+                </TouchableOpacity>
               </View>
-              <View>
-                <Text>{message.message}</Text>
-                <View>
-                  <TouchableOpacity>
-                    <Ionicons name="create-outline" size={20} color="#666" />
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Ionicons name="trash-outline" size={20} color="#666" />
+            ) : (
+              <>
+                <Text style={styles.messageText}>{message.message}</Text>
+                <View style={styles.messageOptionsContainer}>
+                  <TouchableOpacity
+                    style={styles.messageOptionButton}
+                    onPress={() =>
+                      this.setState({
+                        editMessageId: message.message_id,
+                        editTextMessage: message.message,
+                      })
+                    }
+                  >
+                    <Icon name="edit" size={24} color="green" />
                   </TouchableOpacity>
                 </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={{ flex: 1 }}
-          placeholder="Type your message"
-          value={textMessage}
-          onChangeText={(text) => this.setState({ textMessage: text })}
-        />
-        <TouchableOpacity onPress={this.sendMessage}>
-        <Icon name="send" size={24} color="#fff" style={styles.sendButtonIcon} />
-        </TouchableOpacity>
-      </View>
+              </>
+            )}
+          </View>
+        ))}
+      </ScrollView>
     </View>
-  );
+    <View style={styles.inputContainer}>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={(text) => this.setState({ textMessage: text })}
+        value={textMessage}
+        placeholder="Type your message here..."
+      />
+      <TouchableOpacity
+        style={styles.sendButton}
+        onPress={() => {
+          this.sendMessage();
+        }}
+      >
+        <Icon name="send" size={24} color="#fff" style={styles.sendButtonIcon} />
+      </TouchableOpacity>
+    </View>
+  </View>
+);
 }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+    paddingTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chatContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  messageSender: {
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  messageTimestamp: {
+    fontSize: 12,
+    color: '#999',
+  },
+  messageText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  messageOptionsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  messageOptionButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  messageOptionText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  editMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  editMessageInput: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 10,
+    fontSize: 16,
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -186,4 +348,45 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#D3D3D3',
   },
+  textInput: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontSize: 16,
+  },
+  sendButton: {
+    marginLeft: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: 'green',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sendButtonIcon: {
+    color: 'white',
+  },
+  errorContainer: {
+    backgroundColor: 'red',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 10,
+  },
+  errorText: {
+    color: '#fff',
+    marginLeft: 10,
+  },                           
 });
