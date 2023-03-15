@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -98,10 +98,8 @@ sendMessage = async () => {
   }
 };
 
-
 render() {
-  const { chatData, error, isLoading } = this.state;
-  const { chatId } = this.props.route.params;  
+  const { chatData, error, isLoading, textMessage } = this.state;
 
   if (isLoading) {
     return (
@@ -130,8 +128,14 @@ render() {
   return (
     <View>
       {orderedMessages.map((message) => (
-        <Text>{message.message}</Text>
+        <Text key={message.message_id}>{message.message}</Text>
       ))}
+      <TextInput
+        placeholder="Type your message"
+        value={textMessage}
+        onChangeText={(text) => this.setState({ textMessage: text })}
+      />
+      <Button title="Send" onPress={this.sendMessage} />
     </View>
   );
 }
