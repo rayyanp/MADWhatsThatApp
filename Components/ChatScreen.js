@@ -12,6 +12,7 @@ export default class ChatScreen extends Component {
       chatData: null ,
       error: null,
       isLoading: true,
+      textMessage: '',
     };
   }
 
@@ -56,7 +57,48 @@ export default class ChatScreen extends Component {
   }
 };
 
- 
+
+sendMessage = async () => {
+  const { chatId } = this.props.route.params;
+  const { textMessage } = this.state;
+
+  try {
+    const response = await fetch(
+      `http://localhost:3333/api/1.0.0/chat/`+chatId+`/message`,
+      {
+        method: 'POST',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: textMessage }),
+      }
+    );
+
+    if (response.status === 200) {
+      this.setState({ textMessage: '' }); // Clear the message input field
+      this.fetchChatData(); // Fetch chat data again to display the new message
+      return response;
+    } else if (response.status === 400) {
+      throw new Error("Bad request");
+    } else if (response.status === 401) {
+      throw new Error('Unauthorized');
+    } else if (response.status === 403) {
+      throw new Error('Forbidden');
+    } else if (response.status === 404) {
+      throw new Error('Not Found');
+    } else if (response.status === 500) {
+      throw new Error('Server Error');
+    } else {
+      throw new Error('Error');
+    }
+  } catch (error) {
+    console.error('Error sending message:', error);
+    this.setState({ error });
+  }
+};
+
+
 render() {
   const { chatData, error, isLoading } = this.state;
   const { chatId } = this.props.route.params;  
