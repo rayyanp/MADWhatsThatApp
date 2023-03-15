@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
     paddingTop: 20,
+    paddingHorizontal: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -276,7 +277,6 @@ const styles = StyleSheet.create({
   },
   chatContainer: {
     flex: 1,
-    paddingHorizontal: 10,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     borderWidth: 1,
@@ -289,12 +289,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 5,
+    marginBottom: 10,
   },
   messageHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 5,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   messageSender: {
     fontWeight: 'bold',
@@ -306,13 +308,15 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    marginBottom: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   messageOptionsContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 5,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   messageOptionButton: {
     paddingVertical: 5,
@@ -327,7 +331,8 @@ const styles = StyleSheet.create({
   editMessageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   editMessageInput: {
     flex: 1,
@@ -343,10 +348,11 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
     borderTopWidth: 1,
     borderTopColor: '#D3D3D3',
+    paddingTop: 5,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   textInput: {
     flex: 1,
@@ -364,13 +370,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     backgroundColor: 'green',
-    display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   sendButtonIcon: {
-    color: 'white',
+    marginLeft: 2,
   },
   errorContainer: {
     backgroundColor: 'red',
