@@ -26,7 +26,17 @@ export default class ChatScreen extends Component {
 
     if (response.status === 200) {
       const data = await response.json();
-    }
+  } else if (response.status === 401) {
+    throw new Error('Unauthorized');
+  } else if (response.status === 403) {
+    throw new Error('Forbidden');
+  } else if (response.status === 404) {
+    throw new Error('Not Found');
+  } else if (response.status === 500) {
+    throw new Error('Server Error');
+  } else {
+    throw new Error('Error');
+  }
   } catch (error) {
     console.error('Error fetching chat data:', error);
   }
