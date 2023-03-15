@@ -16,7 +16,6 @@ export default class ChatScreen extends Component {
       editMessageId: null,
       editTextMessage: '',
       isEditing: false,
-      isDeleting: false,
     };
   }
 
@@ -148,8 +147,6 @@ editMessage = async () => {
   deleteMessage = async (message_id) => {
     const { chatId } = this.props.route.params;
 
-    this.setState({ isDeleting: true });
-
     try {
       const response = await fetch(
         `http://localhost:3333/api/1.0.0/chat/`+chatId+`/message/`+message_id,
@@ -162,7 +159,6 @@ editMessage = async () => {
       );
 
       if(response.status === 200) {
-        this.setState({ isDeleting: false });
         this.fetchChatData();
       } else if (response.status === 401) {
         throw new Error('Unauthorized');
@@ -182,7 +178,7 @@ editMessage = async () => {
     };
 
 render() {
-const { chatData, textMessage, isLoading, isEditing, isDeleting, editMessageId, editTextMessage, error  } = this.state;
+const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
 
 if (isLoading) {
 return (
@@ -272,6 +268,9 @@ return (
                   >
                     <Icon name="edit" size={24} color="green" />
                   </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.deleteMessage(message.message_id)}>
+                  <Icon name="delete" size={20} color="red" />
+                </TouchableOpacity>
                 </View>
               </>
             )}
