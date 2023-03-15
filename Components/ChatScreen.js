@@ -16,6 +16,7 @@ export default class ChatScreen extends Component {
       editMessageId: null,
       editTextMessage: '',
       isEditing: false,
+      isDeleting: false,
     };
   }
 
@@ -124,7 +125,7 @@ editMessage = async () => {
           editTextMessage: '',
           isEditing: false,
         });
-        this.fetchChatData(); // Fetch chat data again to display the new message
+        this.fetchChatData();
       } else if (response.status === 400) {
         throw new Error("Bad request");
       } else if (response.status === 401) {
@@ -143,9 +144,45 @@ editMessage = async () => {
       this.setState({ isEditing: false, error });
     }
   };
-    
+  
+  deleteMessage = async (message_id) => {
+    const { chatId } = this.props.route.params;
+
+    this.setState({ isDeleting: true });
+
+    try {
+      const response = await fetch(
+        `http://localhost:3333/api/1.0.0/chat/`+chatId+`/message/`+message_id,
+        {
+          method: 'DELETE',
+          headers: {
+            'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          },
+        }
+      );
+
+      if(response.status === 200) {
+        this.setState({ isDeleting: false });
+        this.fetchChatData();
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 403) {
+        throw new Error('Forbidden, you cannot delete someone elses message');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      } else {
+        throw new Error('Error');
+      }
+    } catch (error) {
+        console.error('Error deleting message:', error);
+        this.setState({ isDeleting: false, error });
+      }
+    };
+
 render() {
-const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
+const { chatData, textMessage, isLoading, isEditing, isDeleting, editMessageId, editTextMessage, error  } = this.state;
 
 if (isLoading) {
 return (
