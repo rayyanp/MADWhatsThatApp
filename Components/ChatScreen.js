@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -127,15 +127,41 @@ render() {
 
   return (
     <View>
-      {orderedMessages.map((message) => (
-        <Text key={message.message_id}>{message.message}</Text>
-      ))}
-      <TextInput
-        placeholder="Type your message"
-        value={textMessage}
-        onChangeText={(text) => this.setState({ textMessage: text })}
-      />
-      <Button title="Send" onPress={this.sendMessage} />
+      <ScrollView>
+        {orderedMessages.map((message) => (
+          <View key={message.message_id}>
+            <View>
+              <Text>
+                {message.author.first_name} {message.author.last_name}
+              </Text>
+              <Text>
+                {new Date(message.timestamp).toLocaleTimeString()}
+              </Text>
+            </View>
+            <View>
+              <Text>{message.message}</Text>
+              <View>
+                <TouchableOpacity>
+                  <Ionicons name="create-outline" size={20} color="#666" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Ionicons name="trash-outline" size={20} color="#666" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
+      <View>
+        <TextInput
+          placeholder="Type your message"
+          value={textMessage}
+          onChangeText={(text) => this.setState({ textMessage: text })}
+        />
+        <TouchableOpacity onPress={this.sendMessage}>
+          <Ionicons name="send-outline" size={20} color="#fff" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
