@@ -11,6 +11,7 @@ export default class ChatScreen extends Component {
     this.state = {
       chatData: null ,
       error: null,
+      isLoading: true,
     };
   }
 
@@ -37,7 +38,7 @@ export default class ChatScreen extends Component {
 
     if (response.status === 200) {
       const data = await response.json();
-      this.setState({ chatData: data });
+      this.setState({ chatData: data, isLoading: false });
   } else if (response.status === 401) {
     throw new Error('Unauthorized');
   } else if (response.status === 403) {
@@ -51,14 +52,22 @@ export default class ChatScreen extends Component {
   }
   } catch (error) {
     console.error('Error fetching chat data:', error);
-    this.setState({ error });
+    this.setState({ error, isLoading: false });
   }
 };
 
  
 render() {
-  const { chatData, error  } = this.state;
+  const { chatData, error, isLoading  } = this.state;
   const { chatId } = this.props.route.params;  
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6646ee" />
+      </View>
+    );
+  }  
 
   if (error) {
     return (
