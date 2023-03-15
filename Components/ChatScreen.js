@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator,StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -126,43 +126,64 @@ render() {
   const orderedMessages = messages.sort((x, y) => x.timestamp - y.timestamp);
 
   return (
-    <View>
-      <ScrollView>
-        {orderedMessages.map((message) => (
-          <View key={message.message_id}>
-            <View>
-              <Text>
-                {message.author.first_name} {message.author.last_name}
-              </Text>
-              <Text>
-                {new Date(message.timestamp).toLocaleTimeString()}
-              </Text>
-            </View>
-            <View>
-              <Text>{message.message}</Text>
+    <View style={{ flex: 1 }}>
+      <View style={{ height: '80%' }}>
+        <ScrollView
+          ref={(scrollView) => {
+            this.scrollView = scrollView;
+          }}
+          onContentSizeChange={() =>
+            this.scrollView.scrollToEnd({ animated: true })
+    }
+        >
+          {orderedMessages.map((message) => (
+            <View key={message.message_id}>
               <View>
-                <TouchableOpacity>
-                  <Ionicons name="create-outline" size={20} color="#666" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Ionicons name="trash-outline" size={20} color="#666" />
-                </TouchableOpacity>
+                <Text>
+                  {message.author.first_name} {message.author.last_name}
+                </Text>
+                <Text>
+                  {new Date(message.timestamp).toLocaleTimeString()}
+                </Text>
+              </View>
+              <View>
+                <Text>{message.message}</Text>
+                <View>
+                  <TouchableOpacity>
+                    <Ionicons name="create-outline" size={20} color="#666" />
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Ionicons name="trash-outline" size={20} color="#666" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        ))}
-      </ScrollView>
-      <View>
+          ))}
+        </ScrollView>
+      </View>
+      <View style={styles.inputContainer}>
         <TextInput
+          style={{ flex: 1 }}
           placeholder="Type your message"
           value={textMessage}
           onChangeText={(text) => this.setState({ textMessage: text })}
         />
         <TouchableOpacity onPress={this.sendMessage}>
-          <Ionicons name="send-outline" size={20} color="#fff" />
+        <Icon name="send" size={24} color="#fff" style={styles.sendButtonIcon} />
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 }
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderTopWidth: 1,
+    borderTopColor: '#D3D3D3',
+  },
+});
