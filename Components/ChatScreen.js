@@ -201,6 +201,9 @@ return (
 
 return (
   <View style={styles.container}>
+    <View>
+    <Text>{chatData.name}</Text>
+    </View>
     <View style={styles.chatContainer}>
       <ScrollView
         ref={(scrollView) => {
