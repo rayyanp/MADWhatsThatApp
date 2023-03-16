@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import {Text, View, FlatList, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default class ChatInfoScreen extends Component {
   state = {
+    chatName: '',
     members: [],
     error: null,
     members: [],
@@ -90,7 +92,6 @@ export default class ChatInfoScreen extends Component {
           'Content-Type': 'application/json',
         },
       });
-  
       if (response.status === 200) {
         this.fetchChatData(chatId); // call fetchChatData after deleting the user from the chat
       } else if (response.status === 400) {
@@ -108,8 +109,35 @@ export default class ChatInfoScreen extends Component {
     }
   };
 
+  addContactToChat = async (userId) => {
+    const chatId = this.props.route.params.chatId;
+  
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/`+chatId+`/user/`+userId, {
+        method: 'POST',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        await this.fetchChatData(chatId); // call fetchChatData after adding the user to the chat
+      } else if (response.status === 400) {
+        throw new Error('Bad Request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 render() {
-  const { members, error } = this.state;
+  const { members, error, chatName, contacts, } = this.state;
 
   if (error) {
     return (
