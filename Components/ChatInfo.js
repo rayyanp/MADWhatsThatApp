@@ -71,20 +71,18 @@ render() {
       <View style={styles.header}>
       <Text style={styles.chatName}>{chatName}</Text>
       </View>  
-      <Text>Members</Text>
-
       <FlatList
-        data={members}
-        keyExtractor={(item) => item.user_id.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <Text>
-              {item.first_name} {item.last_name}
-            </Text>
-          </View>
-        )}
-      />
-    </View>
+          data={members}
+          keyExtractor={(item) => item.user_id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.memberContainer}>
+              <Text style={styles.memberNameText}>
+                {item.first_name} {item.last_name}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
   );
 }
 }
@@ -124,5 +122,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  membersContainer: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dcdcdc',
+  },
+  membersTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  memberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  memberNameText: {
+    flex: 1,fontSize: 16,
   },
 });
