@@ -21,7 +21,6 @@ export default class ChatInfoScreen extends Component {
     this.fetchContactsData();
   });
   }
-
   fetchChatData = async (chatId) => {
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/`+chatId, {
@@ -36,6 +35,7 @@ export default class ChatInfoScreen extends Component {
         this.setState({
           chatName: data.name,
           members: data.members,
+          isLoading: false,
           error: null,
         });
       } else if (response.status === 400) {
@@ -49,7 +49,7 @@ export default class ChatInfoScreen extends Component {
       }
     } catch (error) {
       console.error(error);
-      this.setState({ error: error.message});
+      this.setState({ error: error.message, isLoading: false });
     }
   };
 
@@ -137,7 +137,15 @@ export default class ChatInfoScreen extends Component {
   };
   
 render() {
-  const { members, error, chatName, contacts, } = this.state;
+  const { members, error, chatName, contacts, isLoading } = this.state;
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   if (error) {
     return (
