@@ -204,6 +204,12 @@ return (
     <View style={styles.chatNameContainer}>
     <Text style={styles.chatName}>{chatData.name}</Text>
     </View>
+    <TouchableOpacity 
+        style={styles.chatInfoButton}
+        onPress={() => this.props.navigation.navigate('ChatInfo', { chatId: chatId })}
+      >
+        <Icon name="info" size={24} color="#FFF" />
+      </TouchableOpacity>
     <View style={styles.chatContainer}>
       <ScrollView
         ref={(scrollView) => {
@@ -449,5 +455,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+  },
+  chatInfoButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: 'green',
   },                          
 });
