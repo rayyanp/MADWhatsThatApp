@@ -202,7 +202,7 @@ return (
 return (
   <View style={styles.container}>
     <View style={styles.chatNameContainer}>
-    <Text>{chatData.name}</Text>
+    <Text style={styles.chatName}>{chatData.name}</Text>
     </View>
     <View style={styles.chatContainer}>
       <ScrollView
@@ -444,5 +444,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     marginBottom: 10,
-  },                           
+  }, 
+  chatName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },                          
 });
