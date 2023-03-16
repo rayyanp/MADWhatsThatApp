@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, FlatList, ActivityIndicator, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export class ChatInfoScreen extends Component {
+export default class ChatInfoScreen extends Component {
   state = {
     members: [],
     error: null,
@@ -46,4 +46,63 @@ export class ChatInfoScreen extends Component {
       this.setState({ error: error.message});
     }
   };
+
+render() {
+  const { members, error } = this.state;
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
+  if (!members) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text>Members</Text>
+
+      <FlatList
+        data={members}
+        keyExtractor={(item) => item.user_id.toString()}
+        renderItem={({ item }) => (
+          <View>
+            <Text>
+              {item.first_name} {item.last_name}
+            </Text>
+          </View>
+        )}
+      />
+    </View>
+  );
 }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+    paddingTop: 20,
+    paddingHorizontal: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    backgroundColor: 'red',
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+});
