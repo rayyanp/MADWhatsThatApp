@@ -179,6 +179,7 @@ editMessage = async () => {
 
 render() {
 const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
+const { chatId } = this.props.route.params;
 
 if (isLoading) {
 return (
@@ -202,14 +203,16 @@ return (
 return (
   <View style={styles.container}>
     <View style={styles.chatNameContainer}>
-    <Text style={styles.chatName}>{chatData.name}</Text>
-    </View>
-    <TouchableOpacity 
+      <View style={styles.chatNameWrapper}>
+        <Text style={styles.chatName}>{chatData.name}</Text>
+      </View>
+      <TouchableOpacity 
         style={styles.chatInfoButton}
         onPress={() => this.props.navigation.navigate('ChatInfo', { chatId: chatId })}
       >
         <Icon name="info" size={24} color="#FFF" />
       </TouchableOpacity>
+    </View>
     <View style={styles.chatContainer}>
       <ScrollView
         ref={(scrollView) => {
@@ -448,18 +451,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#075E54',
     paddingHorizontal: 10,
-    marginBottom: 10,
-  }, 
+    height: 50,
+  },
+  chatNameWrapper: {
+    flex: 1,
+    marginLeft: 10,
+  },
   chatName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#FFF',
   },
   chatInfoButton: {
-    paddingVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: 'green',
-  },                          
+    height: '100%',
+  },
 });
