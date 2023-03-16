@@ -7,12 +7,16 @@ export default class ChatInfoScreen extends Component {
   state = {
     members: [],
     error: null,
+    members: [],
+    isLoading: true,
+    contacts: [],
   };
 
   componentDidMount() {
     this.props.navigation.addListener('focus', () => {
     const chatId = this.props.route.params.chatId;
     this.fetchChatData(chatId);
+    this.fetchContactsData();
   });
   }
 
@@ -46,6 +50,34 @@ export default class ChatInfoScreen extends Component {
       this.setState({ error: error.message});
     }
   };
+
+  fetchContactsData = async () => {
+    try {
+      const response = await fetch('http://localhost:3333/api/1.0.0/contacts', {
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        const contacts = data.map((contact) => ({
+          id: contact.user_id.toString(),
+          name: `${contact.first_name} ${contact.last_name}`,
+        }));
+        this.setState({ contacts, error: null });
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+      this.setState({ error: error.message });
+    }
+    };
+
 
   removeMember = async (userId) => {
     const chatId = this.props.route.params.chatId;
@@ -117,6 +149,25 @@ render() {
             </View>
           )}
         />
+        <View style={styles.addMemberContainer}>
+        <Text style={styles.addMemberTitle}>Add Members</Text>
+  
+        <FlatList
+          data={contacts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.contactContainer}>
+              <Text style={styles.contactNameText}>{item.name}</Text>
+              <TouchableOpacity 
+                style={styles.addMemberButton}
+                onPress={() => this.addContactToChat(item.id)}
+              >
+                <Icon name="plus" size={20} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </View>
       </View>
   );
 }
@@ -178,4 +229,38 @@ const styles = StyleSheet.create({
   memberNameText: {
     flex: 1,fontSize: 16,
   },
-});
+  removeMemberButton: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+  addMemberContainer: {
+    flex: 2,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  addMemberTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  contactContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  contactNameText: {
+    flex: 1,
+    fontSize: 16,
+  },
+  addMemberButton: {
+    backgroundColor: '#34C759',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+    marginLeft: 8,
+  },
+});   
+      
