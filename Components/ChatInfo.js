@@ -47,6 +47,35 @@ export default class ChatInfoScreen extends Component {
     }
   };
 
+  removeMember = async (userId) => {
+    const chatId = this.props.route.params.chatId;
+  
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/`+chatId+`/user/`+userId, {
+        method: 'DELETE',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.status === 200) {
+        this.fetchChatData(chatId); // call fetchChatData after deleting the user from the chat
+      } else if (response.status === 400) {
+        throw new Error('Bad Request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+      this.setState({ error: error.message });
+    }
+  };
+
 render() {
   const { members, error } = this.state;
 
@@ -79,6 +108,12 @@ render() {
               <Text style={styles.memberNameText}>
                 {item.first_name} {item.last_name}
               </Text>
+              <TouchableOpacity
+                style={styles.removeMemberButton}
+                onPress={() => this.removeMember(item.user_id)}
+              >
+                <Icon name="minus" size={20} color="#fff" />
+              </TouchableOpacity>
             </View>
           )}
         />
