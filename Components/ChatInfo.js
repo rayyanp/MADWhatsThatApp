@@ -68,6 +68,9 @@ render() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+      <Text style={styles.chatName}>{chatName}</Text>
+      </View>  
       <Text>Members</Text>
 
       <FlatList
@@ -104,5 +107,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'red',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#075e54',
+  },
+  chatName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });
