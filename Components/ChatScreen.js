@@ -201,7 +201,7 @@ return (
 
 return (
   <View style={styles.container}>
-    <View>
+    <View style={styles.chatNameContainer}>
     <Text>{chatData.name}</Text>
     </View>
     <View style={styles.chatContainer}>
@@ -437,5 +437,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#D3D3D3',
     borderBottomWidth: 1,
     marginHorizontal: 10,
-  },                            
+  }, 
+  chatNameContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },                           
 });
