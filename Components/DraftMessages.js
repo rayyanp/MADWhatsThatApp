@@ -30,6 +30,30 @@ fetchDraftsData = async () => {
       this.setState({ isLoading: false, error });
     }
   };
+
+  deleteDraftMessage = async (message_id) => {
+    const { chatId } = this.props.route.params;
+    this.setState({ deleteMessageId: message_id });
+    try {
+      // retrieve the list of draft messages from local storage
+      const draftMessages = await AsyncStorage.getItem(`draft_messages_`+chatId);
+      const parsed = JSON.parse(draftMessages);
+      
+      // filter out the message with the specified message_id
+      const filteredMessages = parsed.filter((message) => message.message_id !== message_id);
+  
+      // store the updated list of draft messages back in local storage
+      await AsyncStorage.setItem(`draft_messages_`+chatId, JSON.stringify(filteredMessages));
+      
+      // update the state to reflect the deleted message
+      this.fetchDraftsData();
+      this.setState({ deleteMessageId: null });
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      this.setState({ deleteMessageId: null, error });
+    }
+  };
+  
   
   render() {
     const { chatData, isLoading, error, } = this.state;
@@ -67,7 +91,10 @@ fetchDraftsData = async () => {
                 <TouchableOpacity style={styles.iconButton}>
                   <Icon name="edit" size={20} color="#2089dc" style={styles.icon} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity 
+                    style={styles.iconButton}
+                    onPress = {() => this.deleteDraftMessage(message.message_id)}
+                    >
                   <Icon name="delete" size={20} color="#dc3545" style={styles.icon} />
                 </TouchableOpacity>
               </View>
