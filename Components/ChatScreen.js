@@ -16,6 +16,7 @@ export default class ChatScreen extends Component {
       editMessageId: null,
       editTextMessage: '',
       isEditing: false,
+      showSuccess: false,
     };
   }
 
@@ -231,7 +232,7 @@ editMessage = async () => {
     
 
 render() {
-const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
+const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error, showSuccess } = this.state;
 const { chatId } = this.props.route.params;
 
 if (isLoading) {
@@ -272,6 +273,14 @@ return (
       <Icon name="save" size={24} color="#FFF" />
     </TouchableOpacity>
     </View>
+    {showSuccess && (
+      <View style={styles.successContainer}>
+        <TouchableOpacity onPress={() => this.setState({ showSuccess: false })} style={styles.closeButton}>
+          <Ionicons name="close-circle" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.successText}>Your message has been saved to drafts!</Text>
+      </View>
+    )}
     <View style={styles.chatContainer}>
       <ScrollView
         ref={(scrollView) => {
@@ -533,4 +542,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: '100%',
   },
+  successContainer: {
+    backgroundColor: '#eaffea',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+    position: 'relative',
+  },
+  successText: {
+    color: '#008000',
+    fontSize: 16,
+    marginLeft: 10,
+    },   
 });
