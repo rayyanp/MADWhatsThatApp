@@ -107,7 +107,39 @@ fetchDraftsData = async () => {
     }
   };
   
+  editDraftMessage = async (message_id) => {
+    const { chatId } = this.props.route.params;
+    const { editMessageId, editTextMessage } = this.state;
+    this.setState({ isEditing: true });
   
+    try {
+      // retrieve the list of draft messages from local storage
+      const draftMessages = await AsyncStorage.getItem(`draft_messages_`+chatId);
+      const parsed = JSON.parse(draftMessages);
+  
+      const editedDraftMessages = parsed.map((draftMessage) => {
+        if (draftMessage.message_id === message_id) {
+          return { ...draftMessage, message: editTextMessage };
+        }
+        return draftMessage;
+      });      
+  
+      // update the list of draft messages in local storage
+      await AsyncStorage.setItem(`draft_messages_${chatId}`, JSON.stringify(editedDraftMessages));
+  
+      // reset the state and refetch the data
+      this.setState({
+        editMessageId: null,
+        editTextMessage: '',
+        isEditing: false,
+      });
+      this.fetchDraftsData();
+    } catch (error) {
+      console.error('Error editing message:', error);
+      this.setState({ isEditing: false, error });
+    }
+  };
+
   render() {
     const { chatData, isLoading, error, isEditing, editMessageId, editTextMessage } = this.state;
   
@@ -202,8 +234,8 @@ fetchDraftsData = async () => {
           </ScrollView>
         </View>
       );
-                    }
-                }      
+    }
+}      
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -281,38 +313,38 @@ const styles = StyleSheet.create({
       marginHorizontal: 5,
     },
     messageOptionsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        marginHorizontal: 10,
-        marginVertical: 5,
-      },
-      messageOptionButton: {
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        marginLeft: 10,
-      },
-      messageOptionText: {
-        fontSize: 14,
-        fontWeight: 'bold',
-      },
-      editMessageContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginHorizontal: 10,
-        marginVertical: 5,
-      },
-      editMessageInput: {
-        flex: 1,
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#D3D3D3',
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginRight: 10,
-        fontSize: 16,
-      },
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      marginHorizontal: 10,
+      marginVertical: 5,
+    },
+    messageOptionButton: {
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+      borderRadius: 5,
+      marginLeft: 10,
+    },
+    messageOptionText: {
+      fontSize: 14,
+      fontWeight: 'bold',
+    },
+    editMessageContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginHorizontal: 10,
+      marginVertical: 5,
+    },
+    editMessageInput: {
+      flex: 1,
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      borderColor: '#D3D3D3',
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      marginRight: 10,
+      fontSize: 16,
+    },
   });
   
