@@ -181,9 +181,12 @@ export default class ChatInfoScreen extends Component {
     }
   };
   
+  editChatNameChange = (editChatName) => {
+    this.setState({ editChatName });
+  };
   
 render() {
-  const { members, error, chatName, contacts, isLoading } = this.state;
+  const { members, error, chatName, contacts, isLoading, editChatName, isEditingChatName  } = this.state;
 
   if (isLoading) {
     return (
@@ -212,9 +215,43 @@ render() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <Text style={styles.chatName}>{chatName}</Text>
-      </View>  
-      <FlatList
+        <Text style={styles.chatName}>{chatName}</Text>
+        {isEditingChatName ? (
+          <View>
+            <TextInput
+              onChangeText={this.editChatNameChange}
+              value={editChatName}
+            />
+            <TouchableOpacity onPress={this.editChatName}>
+              <Text>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ isEditingChatName: false })}
+            >
+              <Icon name="close" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity
+              onPress={() =>
+                this.setState({
+                  isEditingChatName: true,
+                  editChatId: this.props.route.params.chatId,
+                  editChatName: chatName,
+                })
+              }
+            >
+              <Icon name="pencil" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.chatName}>{chatName}</Text>
+          </>
+        )}
+      </View>
+  
+      <View style={styles.membersContainer}>
+        <Text style={styles.membersTitle}>Members</Text>
+        <FlatList
           data={members}
           keyExtractor={(item) => item.user_id.toString()}
           renderItem={({ item }) => (
@@ -232,29 +269,28 @@ render() {
           )}
         />
         <View style={styles.addMemberContainer}>
-        <Text style={styles.addMemberTitle}>Add Members</Text>
-  
-        <FlatList
-          data={contacts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.contactContainer}>
-              <Text style={styles.contactNameText}>{item.name}</Text>
-              <TouchableOpacity 
-                style={styles.addMemberButton}
-                onPress={() => this.addContactToChat(item.id)}
-              >
-                <Icon name="plus" size={20} color="#fff" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+          <Text style={styles.addMemberTitle}>Add Members</Text>
+          <FlatList
+            data={contacts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.contactContainer}>
+                <Text style={styles.contactNameText}>{item.name}</Text>
+                <TouchableOpacity
+                  style={styles.addMemberButton}
+                  onPress={() => this.addContactToChat(item.id)}
+                >
+                  <Icon name="plus" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        </View>
       </View>
-      </View>
+    </View>
   );
-}
-}
-
+  }
+}  
 const styles = StyleSheet.create({
   container: {
     flex: 1,
