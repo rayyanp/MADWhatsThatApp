@@ -212,6 +212,12 @@ return (
       >
         <Icon name="info" size={24} color="#FFF" />
       </TouchableOpacity>
+      <TouchableOpacity 
+        style={styles.chatInfoButton}
+        onPress={() => this.props.navigation.navigate('DraftMessages', { chatId: chatId })}
+        >
+      <Icon name="save" size={24} color="#FFF" />
+    </TouchableOpacity>
     </View>
     <View style={styles.chatContainer}>
       <ScrollView

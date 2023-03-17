@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ChatList from './ChatList';
 import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
+import DraftMessages from './DraftMessages';
 import Blocked from './Blocked';
 import Contacts from './Contacts';
 import SearchContacts from './SearchContacts';
@@ -103,6 +104,7 @@ function ChatNav() {
       <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatInfo" component={ChatInfo} />
+      <Stack.Screen name="DraftMessages" component={DraftMessages} />
     </Stack.Navigator>
   );
 }
