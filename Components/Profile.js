@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EmailValidator from 'email-validator';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class ProfileScreen extends Component {
   state = {
@@ -158,7 +159,7 @@ export default class ProfileScreen extends Component {
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Profile</Text>
         </View>
-  
+
         {loading ? (
           <ActivityIndicator size="large" color="#6B55E6" />
         ) : (
@@ -171,48 +172,74 @@ export default class ProfileScreen extends Component {
               )}
             </View>
             <TouchableOpacity
-            style={styles.cameraButton}
-            onPress={() => this.props.navigation.navigate('CameraSend')}
-          >
-            <Text style={styles.buttonText}>Change Profile Picture</Text>
-          </TouchableOpacity>
+              style={styles.cameraButton}
+              onPress={() => this.props.navigation.navigate('CameraSend')}
+            >
+              <Icon name="photo-camera" size={24} color="#fff" />
+              <Text style={styles.buttonText}>Change Profile Picture</Text>
+            </TouchableOpacity>
             <View style={styles.profileContainer}>
               <Text style={styles.name}>
                 {user.first_name} {user.last_name}
               </Text>
               <Text style={styles.email}>{user.email}</Text>
             </View>
-  
+
             <View style={styles.formContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="First Name"
-                value={editedUser.first_name} // Use editedUser's value if it exists, otherwise use user's value
-                onChangeText={text => this.userInput('first_name', text)}
-              />
-  
-              <TextInput
-                style={styles.input}
-                placeholder="Last Name"
-                value={editedUser.last_name} // Use editedUser's value if it exists, otherwise use user's value
-                onChangeText={text => this.userInput('last_name', text)}
-              />
-  
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={editedUser.email}
-                onChangeText={text => this.userInput('email', text)}
-              />
-  
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={editedUser.password}
-                onChangeText={text => this.userInput('password', text)}
-                secureTextEntry
-              />
-  
+            <Text style={styles.formSubheading}>Edit Profile</Text>
+              <View>
+                <Text style={styles.label}>First Name:</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter first name"
+                    value={editedUser.first_name} // Use editedUser's value if it exists, otherwise use user's value
+                    onChangeText={text => this.userInput('first_name', text)}
+                  />
+                  <Icon name="person" size={24} color="#999" />
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.label}>Last Name:</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter last name"
+                    value={editedUser.last_name} // Use editedUser's value if it exists, otherwise use user's value
+                    onChangeText={text => this.userInput('last_name', text)}
+                  />
+                  <Icon name="person" size={24} color="#999" />
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.label}>Email:</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter email"
+                    value={editedUser.email}
+                    onChangeText={text => this.userInput('email', text)}
+                  />
+                  <Icon name="email" size={24} color="#999" />
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.label}>Password:</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter password"
+                    value={editedUser.password}
+                    onChangeText={text => this.userInput('password', text)}
+                    secureTextEntry
+                  />
+                  <Icon name="lock" size={24} color="#999" />
+                </View>
+              </View>
+
               <TouchableOpacity style={styles.saveButton} onPress={this.saveProfile}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
@@ -229,34 +256,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
   },
   headerContainer: {
-    flexDirection: 'row',
+    backgroundColor:'#2980b9',
+    height: 60,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#FFF',
     borderBottomWidth: 1,
     borderBottomColor: '#ECECEC',
-    paddingBottom: 10,
+    marginBottom: 10,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2980b9',
+    color: '#fff',
   },
-  cameraButton: {
-    backgroundColor: '#2980b9',
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginTop: 10,
+  contentContainer: {
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
+  photoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  photo: {
+    width: 125,
+    height: 125,
+    borderRadius: 75,
+    borderWidth: 2,
+    borderColor: '#6B55E6',
+  },
+  noPhotoText: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 10,
+  },
+  cameraButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#6B55E6',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 10,
+  },
   buttonText: {
-    color: '#FFF',
+    color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft: 5,
   },
   profileContainer: {
     paddingVertical: 20,
@@ -266,52 +315,67 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
+    marginTop: 10,
   },
   email: {
     fontSize: 16,
-    color: '#333',
-  },
-  formContainer: {
-    paddingTop: 30,
-  },
-  photoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  photo: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-  },
-  noPhotoText: {
-    fontSize: 16,
-    color: '#999',
-  },
-  input: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#ECECEC',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    color: '#666',
     marginBottom: 10,
   },
-  saveButton: {
-    backgroundColor:'#2980b9',
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    marginTop: 20,
+  formContainer: {
+    paddingTop: 15,
+    paddingHorizontal: 20,
     alignItems: 'center',
+  },
+  formSubheading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'left',
+    alignSelf: 'stretch',
+    marginLeft: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+    alignSelf: 'stretch',
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+    color: '#666',
+    paddingHorizontal: 10,
+  },
+  saveButton: {
+    backgroundColor: '#6B55E6',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginTop: 20,
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 18,
     fontWeight: 'bold',
-    },
+    fontSize: 16,
+  },
   errorText: {
     color: 'red',
-    textAlign: 'center',
-    marginTop: 10,
+    fontSize: 16,
+    alignSelf: 'center',
+    marginTop: 20,
   },
-});  
+});
