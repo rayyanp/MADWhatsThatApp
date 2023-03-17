@@ -53,6 +53,55 @@ fetchDraftsData = async () => {
       this.setState({ deleteMessageId: null, error });
     }
   };
+
+  sendDraftMessage = async (message_id) => {
+    const { chatId } = this.props.route.params;
+  
+    // Get the draft messages from local storage
+    const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
+    const parsedDraftMessages = JSON.parse(draftMessages);
+  
+    // Find the draft message with the matching message ID
+    const draftMessage = parsedDraftMessages.find((message) => message.message_id === message_id);
+  
+    // If a draft message was found, use it as the message body for the API call
+    if (draftMessage) {
+      try {
+        const response = await fetch(
+          `http://localhost:3333/api/1.0.0/chat/${chatId}/message`,
+          {
+            method: 'POST',
+            headers: {
+              'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: draftMessage.message  }),
+          }
+        );
+  
+        if (response.status === 200) {
+          await this.deleteDraftMessage(draftMessage.message_id);
+          this.fetchDraftsData();
+          return response;
+        } else if (response.status === 400) {
+          throw new Error("Bad request");
+        } else if (response.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (response.status === 403) {
+          throw new Error('Forbidden');
+        } else if (response.status === 404) {
+          throw new Error('Not Found');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Error');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        this.setState({ error });
+      }
+    }
+  };
   
   
   render() {
@@ -85,7 +134,10 @@ fetchDraftsData = async () => {
             <View style={styles.message} key={message.message_id}>
               <Text>{message.message}</Text>
               <View style={styles.iconContainer}>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity 
+                    style={styles.iconButton}
+                    onPress = {() => this.sendDraftMessage(message.message_id)}
+                    >
                   <Icon name="send" size={20} color="#28a745" style={styles.icon} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton}>
