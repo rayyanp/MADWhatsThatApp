@@ -12,6 +12,9 @@ export default class ChatInfoScreen extends Component {
     members: [],
     isLoading: true,
     contacts: [],
+    editChatId: null,
+    editChatName: '',
+    isEditingChatName: false,
   };
 
   componentDidMount() {
@@ -135,6 +138,49 @@ export default class ChatInfoScreen extends Component {
       console.error(error);
     }
   };
+
+  editChatName = async () => {
+    const chatId = this.props.route.params.chatId;
+    const { editChatId, editChatName } = this.state;
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/`+editChatId , {
+        method: 'PATCH',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: editChatName,
+        }),
+      });
+      if (response.status === 200) {
+        console.log('Chat name updated successfully');
+        // Clear the edit chat name input field and reset editChatId and editChatName to null
+        this.setState({
+          editChatId: null,
+          editChatName: '',
+          isEditingChatName: false, // disable editing mode
+        });
+        // Refresh the chat list
+        this.fetchChatData(chatId);
+      } else if (response.status === 400) {
+        throw new Error('Bad request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 403) {
+        throw new Error('Forbidden');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      } else {
+        throw new Error('Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   
 render() {
   const { members, error, chatName, contacts, isLoading } = this.state;
