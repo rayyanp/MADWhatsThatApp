@@ -215,17 +215,21 @@ render() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.chatName}>{chatName}</Text>
         {isEditingChatName ? (
-          <View>
+          <View style={styles.editChatNameContainer}>
             <TextInput
+              style={styles.editChatNameInput}
               onChangeText={this.editChatNameChange}
               value={editChatName}
             />
-            <TouchableOpacity onPress={this.editChatName}>
-              <Text>Save</Text>
+            <TouchableOpacity
+              style={styles.saveChatNameButton}
+              onPress={this.editChatName}
+            >
+              <Text style={styles.saveChatNameButtonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              style={styles.cancelEditChatNameButton}
               onPress={() => this.setState({ isEditingChatName: false })}
             >
               <Icon name="close" size={24} color="#fff" />
@@ -233,152 +237,178 @@ render() {
           </View>
         ) : (
           <>
-            <TouchableOpacity
-              onPress={() =>
-                this.setState({
-                  isEditingChatName: true,
-                  editChatId: this.props.route.params.chatId,
-                  editChatName: chatName,
-                })
-              }
-            >
+            <TouchableOpacity style={styles.editChatNameButton} onPress={() => this.setState({ isEditingChatName: true, editChatId: this.props.route.params.chatId, editChatName: chatName })}>
               <Icon name="pencil" size={24} color="#fff" />
             </TouchableOpacity>
             <Text style={styles.chatName}>{chatName}</Text>
           </>
         )}
-      </View>
-  
-      <View style={styles.membersContainer}>
-        <Text style={styles.membersTitle}>Members</Text>
-        <FlatList
-          data={members}
-          keyExtractor={(item) => item.user_id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.memberContainer}>
-              <Text style={styles.memberNameText}>
-                {item.first_name} {item.last_name}
-              </Text>
-              <TouchableOpacity
-                style={styles.removeMemberButton}
-                onPress={() => this.removeMember(item.user_id)}
-              >
-                <Icon name="minus" size={20} color="#fff" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-        <View style={styles.addMemberContainer}>
-          <Text style={styles.addMemberTitle}>Add Members</Text>
-          <FlatList
-            data={contacts}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.contactContainer}>
-                <Text style={styles.contactNameText}>{item.name}</Text>
-                <TouchableOpacity
-                  style={styles.addMemberButton}
-                  onPress={() => this.addContactToChat(item.id)}
-                >
-                  <Icon name="plus" size={20} color="#fff" />
-                </TouchableOpacity>
-              </View>
-            )}
-          />
-        </View>
-      </View>
+      </View>  
+
+    <View style={styles.membersContainer}>
+      <Text style={styles.membersTitle}>Members</Text>
+
+      <FlatList
+        data={members}
+        keyExtractor={(item) => item.user_id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.memberContainer}>
+            <Text style={styles.memberNameText}>
+              {item.first_name} {item.last_name}
+            </Text>
+            <TouchableOpacity
+              style={styles.removeMemberButton}
+              onPress={() => this.removeMember(item.user_id)}
+            >
+              <Icon name="minus" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </View>
-  );
-  }
-}  
+
+    <View style={styles.addMemberContainer}>
+      <Text style={styles.addMemberTitle}>Add Members</Text>
+
+      <FlatList
+        data={contacts}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.contactContainer}>
+            <Text style={styles.contactNameText}>{item.name}</Text>
+            <TouchableOpacity 
+              style={styles.addMemberButton}
+              onPress={() => this.addContactToChat(item.id)}
+            >
+              <Icon name="plus" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
+      />
+    </View>
+  </View>
+);
+}
+} 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-    paddingTop: 20,
-    paddingHorizontal: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    backgroundColor: 'red',
-    padding: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  errorText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'red',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#075e54',
-  },
-  chatName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  membersContainer: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#dcdcdc',
-  },
-  membersTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  memberContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  memberNameText: {
-    flex: 1,fontSize: 16,
-  },
-  removeMemberButton: {
-    backgroundColor: '#FF3B30',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
-  addMemberContainer: {
-    flex: 2,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  addMemberTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  contactContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  contactNameText: {
-    flex: 1,
-    fontSize: 16,
-  },
-  addMemberButton: {
-    backgroundColor: '#34C759',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
+container: {
+  flex: 1,
+  backgroundColor: '#F5FCFF',
+},
+loadingContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+errorContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+errorText: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: 'red',
+},
+chatInfoContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+  borderBottomWidth: 1,
+  borderBottomColor: '#dcdcdc',
+},
+header: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  backgroundColor: '#075e54',
+},
+chatName: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: '#fff',
+},
+editChatNameContainer: {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+editChatNameInput: {
+  flex: 1,
+  color: '#fff',
+  borderWidth: 1,
+  borderColor: '#fff',
+  borderRadius: 5,
+  paddingHorizontal: 10,
+  marginRight: 10,
+},
+saveChatNameButton: {
+  backgroundColor: '#34b7f1',
+  borderRadius: 5,
+  paddingVertical: 5,
+  paddingHorizontal: 10,
+},
+saveChatNameButtonText: {
+  color: '#fff',
+  fontSize: 16,
+},
+cancelEditChatNameButton: {
+  marginLeft: 10,
+},
+membersContainer: {
+  flex: 1,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderBottomWidth: 1,
+  borderBottomColor: '#dcdcdc',
+},
+membersTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginBottom: 12,
+},
+memberContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 8,
+},
+memberNameText: {
+  flex: 1,fontSize: 16,
+},
+removeMemberButton: {
+  backgroundColor: '#FF3B30',
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  borderRadius: 4,
+  marginLeft: 8,
+},
+addMemberContainer: {
+  flex: 2,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+},
+addMemberTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginBottom: 12,
+},
+contactContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 8,
+},
+contactNameText: {
+  flex: 1,
+  fontSize: 16,
+},
+addMemberButton: {
+  backgroundColor: '#34C759',
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  borderRadius: 4,
+  marginLeft: 8,
+},
 });   
-      
+   
