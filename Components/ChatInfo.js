@@ -237,10 +237,10 @@ render() {
           </View>
         ) : (
           <>
+          <Text style={styles.chatName}>{chatName}</Text>
             <TouchableOpacity style={styles.editChatNameButton} onPress={() => this.setState({ isEditingChatName: true, editChatId: this.props.route.params.chatId, editChatName: chatName })}>
               <Icon name="pencil" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.chatName}>{chatName}</Text>
           </>
         )}
       </View>  
@@ -335,6 +335,13 @@ editChatNameContainer: {
   flexDirection: 'row',
   alignItems: 'center',
 },
+editChatNameButton: {
+  backgroundColor: '#007aff',
+  borderRadius: 20,
+  paddingVertical: 5,
+  paddingHorizontal: 10,
+  marginLeft: 10,
+},
 editChatNameInput: {
   flex: 1,
   color: '#fff',
@@ -345,7 +352,7 @@ editChatNameInput: {
   marginRight: 10,
 },
 saveChatNameButton: {
-  backgroundColor: '#34b7f1',
+  backgroundColor: '#007aff',
   borderRadius: 5,
   paddingVertical: 5,
   paddingHorizontal: 10,
