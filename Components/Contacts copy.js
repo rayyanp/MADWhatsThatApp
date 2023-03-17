@@ -150,69 +150,6 @@ export default class Contacts extends Component {
       });
   };
   
-  startChat = async (userId) => {
-    try {
-      // Create a new chat
-      const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
-        method: 'POST',
-        headers: {
-          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: 'New Chat',
-        }),
-      });
-  
-      if (response.status === 201) {
-        const chat = await response.json();
-        const chatId = chat.chat_id;
-  
-        // Add the selected contact to the chat
-        await this.addContactToChat(userId, chatId);
-  
-        // Redirect the user to the new chat
-        this.props.navigation.navigate('ChatScreen', { chatId });
-      } else if (response.status === 400) {
-        throw new Error("Bad request");
-      } else if (response.status === 401) {
-        throw new Error('Unauthorized');
-      } else if (response.status === 500) {
-        throw new Error('Server Error');
-      } else {
-        throw new Error('Error');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  addContactToChat = async (userId, chatId) => {
-    try {
-      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/`+chatId+`/user/`+userId, {
-        method: 'POST',
-        headers: {
-          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
-          'Content-Type': 'application/json',
-        },
-      });
-    
-      if (response.status === 200) {
-      } else if (response.status === 400) {
-        throw new Error('Bad Request');
-      } else if (response.status === 401) {
-        throw new Error('Unauthorized');
-      } else if (response.status === 404) {
-        throw new Error('Not Found');
-      } else {
-        throw new Error('Server Error');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-
 
 render() {
   const { contacts, error, photos } = this.state;
@@ -275,15 +212,6 @@ render() {
               </View>
               <Text style={styles.contactName}>{item.name}</Text>
               <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.startChatButton}
-                onPress={() => this.startChat(item.id)}
-              >
-                <Icon
-                  name="chat"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => this.removeContact(item)}
@@ -307,9 +235,9 @@ render() {
       )}
     </View>
   );
-  }
-}  
-
+          }
+        }  
+    
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -321,27 +249,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#ECECEC',
   },
   header: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#333',
   },
   viewBlockedButton: {
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 4,
-    backgroundColor: '#4C4C4C',
+    borderRadius: 5,
+    backgroundColor: '#6B55E6',
     alignItems: 'center',
     justifyContent: 'center',
   },
   viewBlockedText: {
-    color: '#FFFFFF',
+    color: '#FFF',
     fontWeight: 'bold',
-    fontSize: 14,
   },
   errorContainer: {
     flex: 1,
@@ -355,77 +282,71 @@ const styles = StyleSheet.create({
   sectionHeader: {
     backgroundColor: '#F5F5F5',
     padding: 10,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#333333',
+    color: '#333',
   },
   contactContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#ECECEC',
   },
   contactName: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#333333',
+    fontWeight: 'bold',
+    color: '#333',
   },
   buttonContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-  },
-  startChatButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-    marginRight: 8,
   },
   deleteButton: {
-    backgroundColor: '#FF3B30',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-    marginRight: 8,
+    backgroundColor: '#FF0000',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginRight: 10,
   },
   blockButton: {
-    backgroundColor: '#4C4C4C',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
+    backgroundColor: '#6B55E6',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: '#FFF',
     fontWeight: 'bold',
-    fontSize: 14,
   },
   photoContainer: {
     alignItems: 'center',
-    marginBottom: 16,
-  },
+    marginBottom: 20,
+    },
   photo: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
+    width: 75,
+    height: 75,
+    borderRadius: 40,
+    },
   noPhotoText: {
-    fontSize: 14,
-    color: '#999999',
+    fontSize: 12,
+    color: '#999',
   },
   searchButton: {
     backgroundColor: '#007AFF',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });

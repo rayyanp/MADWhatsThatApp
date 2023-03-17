@@ -125,7 +125,7 @@ fetchDraftsData = async () => {
       });      
   
       // update the list of draft messages in local storage
-      await AsyncStorage.setItem(`draft_messages_${chatId}`, JSON.stringify(editedDraftMessages));
+      await AsyncStorage.setItem(`draft_messages_`+chatId, JSON.stringify(editedDraftMessages));
   
       // reset the state and refetch the data
       this.setState({
