@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -11,6 +11,10 @@ export default class DraftMessages extends Component {
           isLoading: true,
           error: null,
           showSuccess: false,
+          deleteMessageId: null,
+          isEditing: false,
+          editMessageId: null,
+          editMessageText: '',
         };
       }
 
@@ -105,7 +109,7 @@ fetchDraftsData = async () => {
   
   
   render() {
-    const { chatData, isLoading, error, } = this.state;
+    const { chatData, isLoading, error, isEditing, editMessageId, editTextMessage } = this.state;
   
     if (isLoading) {
       return (
@@ -127,36 +131,79 @@ fetchDraftsData = async () => {
     }  
   
     return (
-      <View style={styles.container}>
-        <Text style={styles.formSubheading}>Draft Messages</Text>
-        <ScrollView>
-          {chatData.map((message) => (
-            <View style={styles.message} key={message.message_id}>
-              <Text>{message.message}</Text>
-              <View style={styles.iconContainer}>
-                <TouchableOpacity 
-                    style={styles.iconButton}
-                    onPress = {() => this.sendDraftMessage(message.message_id)}
+        <View style={styles.container}>
+          <Text style={styles.formSubheading}>Draft Messages</Text>
+          <ScrollView>
+            {chatData.map((message) => (
+              <View style={styles.message} key={message.message_id}>
+                {editMessageId === message.message_id ? (
+                  <View style={styles.editMessageContainer}>
+                    <TextInput
+                      style={styles.editMessageInput}
+                      onChangeText={(text) =>
+                        this.setState({ editTextMessage: text })
+                      }
+                      value={editTextMessage}
+                    />
+                    <TouchableOpacity
+                      style={styles.editMessageButton}
+                      onPress={() => {
+                        this.editDraftMessage(message.message_id);
+                      }}
                     >
-                  <Icon name="send" size={20} color="#28a745" style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
-                  <Icon name="edit" size={20} color="#2089dc" style={styles.icon} />
-                </TouchableOpacity>
-                <TouchableOpacity 
-                    style={styles.iconButton}
-                    onPress = {() => this.deleteDraftMessage(message.message_id)}
+                      {isEditing ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                      ) : (
+                        <Icon name="save" size={24} color="green" />
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.editMessageButton}
+                      onPress={() => {
+                        this.setState({ editMessageId: null, editTextMessage: "" });
+                      }}
+                      disabled={isEditing}
                     >
-                  <Icon name="delete" size={20} color="#dc3545" style={styles.icon} />
-                </TouchableOpacity>
+                      <Icon name="close" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <>
+                    <Text style={styles.messageText}>{message.message}</Text>
+                    <View style={styles.messageOptionsContainer}>
+                      <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() =>
+                          this.setState({
+                            editMessageId: message.message_id,
+                            editTextMessage: message.message,
+                          })
+                        }
+                      >
+                        <Icon name="edit" size={20} color="#2089dc" style={styles.icon} />
+                      </TouchableOpacity>
+                      <TouchableOpacity 
+                            style={styles.iconButton}
+                            onPress = {() => this.sendDraftMessage(message.message_id)}
+                            >
+                        <Icon name="send" size={20} color="#28a745" style={styles.icon} />
+                        </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => this.deleteDraftMessage(message.message_id)}
+                      >
+                        <Icon name="delete" size={20} color="#dc3545" style={styles.icon} />
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                )}
               </View>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-    );
-  }
-}
+            ))}
+          </ScrollView>
+        </View>
+      );
+                    }
+                }      
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -233,5 +280,39 @@ const styles = StyleSheet.create({
     icon: {
       marginHorizontal: 5,
     },
+    messageOptionsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        marginVertical: 5,
+      },
+      messageOptionButton: {
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        marginLeft: 10,
+      },
+      messageOptionText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+      editMessageContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginHorizontal: 10,
+        marginVertical: 5,
+      },
+      editMessageInput: {
+        flex: 1,
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#D3D3D3',
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        marginRight: 10,
+        fontSize: 16,
+      },
   });
   
