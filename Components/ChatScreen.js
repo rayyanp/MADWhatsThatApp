@@ -65,12 +65,12 @@ sendMessage = async () => {
   const { chatId } = this.props.route.params;
   const { textMessage } = this.state;
 
-  if (messageText.trim().length === 0) {
+  if (textMessage.trim().length === 0) {
     this.setState({ error: 'Please enter a message before pressing send' });
     return;
   }
 
-  if (messageText.length > 1000) {
+  if (textMessage.length > 1000) {
     this.setState({ error: 'The message is too long' });
     return;
   }
@@ -186,6 +186,49 @@ editMessage = async () => {
         this.setState({ isDeleting: false, error });
       }
     };
+
+  draftMessages = async () => {
+    const { chatId } = this.props.route.params;
+    const { textMessage } = this.state;
+
+    if (textMessage.trim().length === 0) {
+      this.setState({ error: 'Please enter a message before pressing draft' });
+      return;
+    }
+  
+    if (textMessage.length > 1000) {
+      this.setState({ error: 'The message is too long' });
+      return;
+    }
+  
+    try {
+      // Get the previously saved messages from local storage
+      let savedMessages = await AsyncStorage.getItem(`draft_messages_`+chatId);
+      savedMessages = JSON.parse(savedMessages || '[]');
+  
+      // Add the message_id property to each message object
+      savedMessages = savedMessages.map((message, index) => {
+        return {
+          ...message,
+          message_id: index + 1 // Generate a message ID starting from 1
+        }
+      });
+  
+      // Add the current message to the list of saved messages
+      savedMessages.push({ message: textMessage, message_id: savedMessages.length + 1 });
+  
+      // Save the updated list of messages to local storage
+      await AsyncStorage.setItem(`draft_messages_`+chatId, JSON.stringify(savedMessages));
+  
+      // Clear the message text input
+      this.setState({ textMessage: '', showSuccess: true});
+    } catch (error) {
+      console.error(error);
+      // Show an error message if there was an error saving the message
+      this.setState({ error: 'Failed to save message. Please try again later.' });
+    }
+  };
+    
 
 render() {
 const { chatData, textMessage, isLoading, isEditing, editMessageId, editTextMessage, error  } = this.state;
@@ -319,12 +362,12 @@ return (
         onPress={() => {
           this.sendMessage();
         }}
-        disabled={!messageText.trim()}
+        disabled={!textMessage.trim()}
       >
         <Icon name="send" size={24} color="#fff" style={styles.sendButtonIcon} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.sendButton} onPress={this.draftMessages} disabled={!messageText.trim()}>
-        <Icon name="save" size={24} color="black" style={styles.sendButtonIcon} />
+      <TouchableOpacity style={styles.sendButton} onPress={this.draftMessages} disabled={!textMessage.trim()}>
+        <Icon name="save" size={24} color="#fff" style={styles.sendButtonIcon} />
       </TouchableOpacity>
     </View>
   </View>
