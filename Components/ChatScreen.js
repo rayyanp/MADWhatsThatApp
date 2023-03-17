@@ -65,6 +65,16 @@ sendMessage = async () => {
   const { chatId } = this.props.route.params;
   const { textMessage } = this.state;
 
+  if (messageText.trim().length === 0) {
+    this.setState({ error: 'Please enter a message before pressing send' });
+    return;
+  }
+
+  if (messageText.length > 1000) {
+    this.setState({ error: 'The message is too long' });
+    return;
+  }
+
   try {
     const response = await fetch(
       `http://localhost:3333/api/1.0.0/chat/`+chatId+`/message`,
@@ -309,8 +319,12 @@ return (
         onPress={() => {
           this.sendMessage();
         }}
+        disabled={!messageText.trim()}
       >
         <Icon name="send" size={24} color="#fff" style={styles.sendButtonIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.sendButton} onPress={this.draftMessages} disabled={!messageText.trim()}>
+        <Icon name="save" size={24} color="black" style={styles.sendButtonIcon} />
       </TouchableOpacity>
     </View>
   </View>
