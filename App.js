@@ -6,7 +6,7 @@ import Login from './Components/Login';
 import Register from './Components/Register';
 import MainAppNav from './Components/MainAppNav';
 
-
+import globalStyles from './globalStyles';
 
 const AuthStack = createNativeStackNavigator();
 

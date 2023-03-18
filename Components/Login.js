@@ -103,12 +103,6 @@ export default class LoginScreen extends Component {
           error: errorMessage,
           loading: false
         });
-        Alert.alert('Login Failed', errorMessage, [
-          {
-            text: 'Try Again',
-            onPress: () => this.setState({ submitted: false })
-          }
-        ]);
       });
     }      
 

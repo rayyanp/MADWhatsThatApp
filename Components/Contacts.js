@@ -242,8 +242,9 @@ render() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.header}>Contacts</Text>
+    <View style={styles.headerContainer}>
+      <Text style={styles.header}>Contacts</Text>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.viewBlockedButton}
           onPress={() => this.props.navigation.navigate('Blocked')}
@@ -256,6 +257,7 @@ render() {
         >
           <Icon name="search" size={20} color="#fff" />
         </TouchableOpacity>
+        </View>
       </View>
       {error ? (
         <View style={styles.errorContainer}>
@@ -288,7 +290,7 @@ render() {
                   style={styles.deleteButton}
                   onPress={() => this.removeContact(item)}
                 >
-                  <Icon name="delete" size={20} color="#FFF" />
+                  <Icon name="delete" style={styles.icon} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.blockButton}
@@ -316,19 +318,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   headerContainer: {
+    backgroundColor:'#2980b9',
+    height: 60,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
+    borderBottomColor: '#ECECEC',
+    marginBottom: 10,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000',
+    color: '#fff',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   viewBlockedButton: {
     paddingVertical: 8,
@@ -337,6 +344,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#4C4C4C',
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: 10,
   },
   viewBlockedText: {
     color: '#FFFFFF',
@@ -427,5 +435,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
+  },
+  icon: {
+    fontSize: 14,
+    color: 'white',
   },
 });
