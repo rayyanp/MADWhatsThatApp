@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyles from '../globalStyles';
 
 export default class Logout extends Component {
   state = {
@@ -45,7 +46,7 @@ render() {
     const { loading, error } = this.state;
 
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.container}>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <TouchableOpacity
           style={styles.buttonContainer}
