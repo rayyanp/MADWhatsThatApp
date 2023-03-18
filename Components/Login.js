@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import globalStyles from '../globalStyles';
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -108,7 +109,7 @@ export default class LoginScreen extends Component {
 
     render() {
       return (
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
           {this.state.loading ? (
             <ActivityIndicator size="large" color="#0000ff" />
           ) : (

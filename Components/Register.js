@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import * as EmailValidator from 'email-validator';
+import globalStyles from '../globalStyles';
 
 export default class RegisterScreen extends Component {
   constructor(props) {
@@ -97,7 +98,7 @@ _onPressButton() {
 
 render() {
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <Text style={styles.title}>Create Account</Text>
       <TextInput
         style={styles.input}
