@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator,
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 export default class ChatScreen extends Component {
 
@@ -299,7 +300,9 @@ return (
                 </Text>
               )}
               <Text style={styles.messageTimestamp}>
-                {new Date(message.timestamp * 1000).toLocaleTimeString()}
+              {moment(message.timestamp).format(
+                moment(message.timestamp).isSame(new Date(), 'day') ? 'LT' : 'lll'
+              )}
               </Text>
             </View>
             {editMessageId === message.message_id ? (
