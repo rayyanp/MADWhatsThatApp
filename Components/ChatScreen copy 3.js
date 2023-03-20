@@ -296,23 +296,17 @@ return (
       </View>
     )}
 <View style={styles.chatContainer}>
-<FlatList
-  data={chatData.messages.sort((x, y) => x.timestamp - y.timestamp)}
-  keyExtractor={(item) => item.message_id}
-  renderItem={({ item: message }) => (
-    <View key={message.message_id}>
-      <View
-        style={[
-          styles.messageContainer,
-          message.author.user_id == this.state.user_id
-            ? styles.from_me
-            : styles.to_me,
-        ]}
-      >
+  <FlatList
+    data={chatData.messages.sort((x, y) => x.timestamp - y.timestamp)}
+    keyExtractor={(item) => item.message_id}
+    renderItem={({ item: message }) => (
+      <View key={message.message_id}>
         <View style={styles.messageHeader}>
-          <Text style={styles.messageSender}>
-            {message.author.first_name} {message.author.last_name}
-          </Text>
+          {message.author && (
+            <Text style={styles.messageSender}>
+              {message.author.first_name} {message.author.last_name}
+            </Text>
+          )}
           <Text style={styles.messageTimestamp}>
             {moment(message.timestamp).format(
               moment(message.timestamp).isSame(new Date(), 'day') ? 'LT' : 'lll'
@@ -352,32 +346,34 @@ return (
           </View>
         ) : (
           <>
-            <Text style={styles.message}>{message.message}</Text>
+          <Text style={[styles.message, message.author.user_id == this.state.user_id ? styles.from_me : styles.other]}>{message.message}</Text>
+          {message.author.user_id == this.state.user_id && (
             <View style={styles.messageOptionsContainer}>
-              {message.author.user_id == this.state.user_id && (
-                <TouchableOpacity
-                  style={styles.messageOptionButton}
-                  onPress={() =>
-                    this.setState({
-                      editMessageId: message.message_id,
-                      editTextMessage: message.message,
-                    })
-                  }
-                >
-                  <Icon name="edit" size={24} color="green" />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                style={styles.messageOptionButton}
+                onPress={() =>
+                  this.setState({
+                    editMessageId: message.message_id,
+                    editTextMessage: message.message,
+                  })
+                }
+              >
+                <Icon name="edit" size={24} color="green" />
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => this.deleteMessage(message.message_id)}>
                 <Icon name="delete" size={20} color="red" />
               </TouchableOpacity>
             </View>
+          )}
           </>
         )}
+        <View style={styles.horizontalLine} />
       </View>
-    </View>
-  )}
-  onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
-/>
+    )}
+    onContentSizeChange={() =>
+      this.scrollView.scrollToEnd({ animated: true })
+    }
+  />
 </View>
     <View style={styles.inputContainer}>
       <TextInput
