@@ -296,41 +296,28 @@ return (
       </View>
     )}
 <View style={styles.chatContainer}>
-  <FlatList
-    data={chatData.messages.sort((x, y) => x.timestamp - y.timestamp)}
-    keyExtractor={(item) => item.message_id}
-    renderItem={({ item: message }) => (
-      <View style={[styles.messageContainer, message.author.user_id == this.state.user_id ? styles.myMessageContainer : styles.otherMessageContainer]}>
-        <Text style={styles.messageText}>{message.message}</Text>
-        <View style={styles.messageInfoContainer}>
+<FlatList
+  data={chatData.messages.sort((x, y) => x.timestamp - y.timestamp)}
+  keyExtractor={(item) => item.message_id}
+  renderItem={({ item: message }) => (
+    <View key={message.message_id}>
+      <View
+        style={[
+          styles.messageContainer,
+          message.author.user_id == this.state.user_id
+            ? styles.from_me
+            : styles.to_me,
+        ]}
+      >
+        <View style={styles.messageHeader}>
+          <Text style={styles.messageSender}>
+            {message.author.first_name} {message.author.last_name}
+          </Text>
           <Text style={styles.messageTimestamp}>
             {moment(message.timestamp).format(
-              moment(message.timestamp).isSame(new Date(), 'day') ? 'LT' : 'll'
+              moment(message.timestamp).isSame(new Date(), 'day') ? 'LT' : 'lll'
             )}
           </Text>
-          {message.author && (
-            <Text style={styles.messageSender}>
-              {message.author.first_name} {message.author.last_name}
-            </Text>
-          )}
-          {message.author.user_id == this.state.user_id && (
-            <View style={styles.messageOptionsContainer}>
-              <TouchableOpacity
-                style={styles.messageOptionButton}
-                onPress={() =>
-                  this.setState({
-                    editMessageId: message.message_id,
-                    editTextMessage: message.message,
-                  })
-                }
-              >
-                <Icon name="edit" size={24} color="#075e54" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.deleteMessage(message.message_id)}>
-                <Icon name="delete" size={24} color="#075e54" />
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
         {editMessageId === message.message_id ? (
           <View style={styles.editMessageContainer}>
@@ -365,11 +352,32 @@ return (
           </View>
         ) : (
           <>
+            <Text style={styles.message}>{message.message}</Text>
+            <View style={styles.messageOptionsContainer}>
+              {message.author.user_id == this.state.user_id && (
+                <TouchableOpacity
+                  style={styles.messageOptionButton}
+                  onPress={() =>
+                    this.setState({
+                      editMessageId: message.message_id,
+                      editTextMessage: message.message,
+                    })
+                  }
+                >
+                  <Icon name="edit" size={24} color="green" />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={() => this.deleteMessage(message.message_id)}>
+                <Icon name="delete" size={20} color="red" />
+              </TouchableOpacity>
+            </View>
           </>
         )}
       </View>
-    )}
-  />
+    </View>
+  )}
+  onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}
+/>
 </View>
     <View style={styles.inputContainer}>
       <TextInput
@@ -506,6 +514,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 10,
   }, 
+  horizontalLine: {
+    borderBottomColor: '#D3D3D3',
+    borderBottomWidth: 1,
+    marginHorizontal: 10,
+  }, 
   chatNameContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -553,55 +566,5 @@ const styles = StyleSheet.create({
     padding: 5,
     margin: 5,
     width: '40%' 
-},
-messageContainer: {
-  marginHorizontal: 10,
-  marginVertical: 5,
-  borderRadius: 5,
-  padding: 8,
-},
-myMessageContainer: {
-  alignSelf: 'flex-end',
-  backgroundColor: '#dcf8c6',
-  borderRadius: 20,
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-},
-otherMessageContainer: {
-  alignSelf: 'flex-start',
-  backgroundColor: '#EEEEEE',
-  borderRadius: 20,
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-},
-messageText: {
-  fontSize: 16,
-  lineHeight: 20,
-  color: '#000',
-},
-messageInfoContainer: {
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  marginTop: 5,
-},
-messageTimestamp: {
-  fontSize: 12,
-  color: '#808080',
-  marginRight: 5,
-},
-messageSender: {
-  fontSize: 12,
-  color: '#808080',
-  marginRight: 5,
-},
-messageOptionsContainer: {
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  marginLeft: 5,
-},
-messageOptionButton: {
-  padding: 5,
 },
 });
