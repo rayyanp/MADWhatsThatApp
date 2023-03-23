@@ -1,5 +1,9 @@
-import { Component } from 'react';
+/* eslint-disable no-use-before-define */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/no-unstable-nested-components */
+import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -21,7 +25,8 @@ const Tab = createBottomTabNavigator();
 
 export default class MainAppNav extends Component {
   componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
   }
@@ -30,10 +35,11 @@ export default class MainAppNav extends Component {
     this.unsubscribe();
   }
 
-  checkLoggedIn = async () => { 
+  checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('whatsthat_session_token');
     if (!value || value === null) {
-      this.props.navigation.navigate('Login');
+      const { navigation } = this.props;
+      navigation.navigate('Login');
     }
   };
 

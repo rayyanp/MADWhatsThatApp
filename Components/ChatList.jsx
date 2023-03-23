@@ -1,18 +1,113 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, TextInput, FlatList} from 'react-native';
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
+import React, { Component } from 'react';
+import {
+  Text, View, StyleSheet, TouchableOpacity, TextInput, FlatList,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+    paddingHorizontal: 15,
+    paddingTop: 30,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 50,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#D8D8D8',
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  newChatInput: {
+    flex: 1,
+    padding: 10,
+  },
+  createChatButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginLeft: 10,
+  },
+  createChatButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
+  chatList: {
+    flex: 1,
+    marginTop: 10,
+  },
+  chatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  chatInfo: {
+    flex: 1,
+  },
+  chatName: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  lastMessage: {
+    color: '#757575',
+  },
+  timestamp: {
+    color: '#757575',
+    fontSize: 12,
+  },
+});
+
 export default class ChatListScreen extends Component {
-  state = {
-    chats: [],
-    newChatName: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      chats: [],
+      newChatName: '',
+    };
+  }
 
   componentDidMount() {
-    this.props.navigation.addListener('focus', () => {
-    this.fetchChats();
-  });
+    const { navigation } = this.props;
+    navigation.addListener('focus', () => {
+      this.fetchChats();
+    });
   }
 
   fetchChats = async () => {
@@ -60,20 +155,20 @@ export default class ChatListScreen extends Component {
       console.error(error);
     }
   };
-  
+
   createChat = async () => {
     try {
       const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
         method: 'POST',
         headers: {
-          'X-Authorization': await AsyncStorage.getItem("whatsthat_session_token"),
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: this.state.newChatName,
         }),
       });
-  
+
       if (response.status === 201) {
         const json = await response.json();
         console.log(json);
@@ -82,7 +177,7 @@ export default class ChatListScreen extends Component {
         // Refresh the chat list
         this.fetchChats();
       } else if (response.status === 400) {
-        throw new Error("Bad request");
+        throw new Error('Bad request');
       } else if (response.status === 401) {
         throw new Error('Unauthorized');
       } else if (response.status === 500) {
@@ -95,43 +190,37 @@ export default class ChatListScreen extends Component {
     }
   };
 
-  renderChatItem = ({ item }) => {
-    return (
-      <TouchableOpacity
-        style={styles.chatItem}
-        onPress={() =>
-          this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })
-        }
-      >
-        <View style={styles.chatInfo}>
-          <Text style={styles.chatName}>{item.name}</Text>
-          <Text style={styles.lastMessage}>
-            {item.last_message
-              ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
-              : 'No messages'}
-          </Text>
-        </View>
-        <View>
-          <Text style={styles.timestamp}>
-            {item.last_message?.timestamp
-              ? moment(item.last_message.timestamp).format('lll')
-              : ''}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-  
-  
-
-render() {
-  const { chats, newChatName } = this.state;
-  return (
-    <View style={styles.container}>
-    <View style={styles.headerContainer}>
-      <Text style={styles.header}>Chats</Text>
+  renderChatItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.chatItem}
+      onPress={() => this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })}
+    >
+      <View style={styles.chatInfo}>
+        <Text style={styles.chatName}>{item.name}</Text>
+        <Text style={styles.lastMessage}>
+          {item.last_message
+            ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
+            : 'No messages'}
+        </Text>
       </View>
-      <View style={styles.inputContainer}>
+      <View>
+        <Text style={styles.timestamp}>
+          {item.last_message?.timestamp
+            ? moment(item.last_message.timestamp).format('lll')
+            : ''}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  render() {
+    const { chats, newChatName } = this.state;
+    return (
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Chats</Text>
+        </View>
+        <View style={styles.inputContainer}>
           <TextInput
             style={styles.newChatInput}
             onChangeText={(text) => this.setState({ newChatName: text })}
@@ -148,94 +237,7 @@ render() {
           keyExtractor={(item) => item.chat_id.toString()}
           style={styles.chatList}
         />
-    </View>
-  );
+      </View>
+    );
+  }
 }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-    paddingHorizontal: 15,
-    paddingTop: 30,
-  },
-  headerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 50,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#D8D8D8',
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    shadowColor: '#000',
-    shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  newChatInput: {
-    flex: 1,
-    padding: 10,
-  },
-  createChatButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  createChatButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-  chatList: {
-    flex: 1,
-    marginTop: 10,
-  },
-  chatItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    marginBottom: 10,
-    shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  chatInfo: {
-    flex: 1,
-  },
-  chatName: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  lastMessage: {
-    color: '#757575',
-  },
-  timestamp: {
-    color: '#757575',
-    fontSize: 12,
-  },
-});
