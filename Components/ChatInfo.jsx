@@ -135,6 +135,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginLeft: 8,
   },
+  creatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  chatCreatorText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#2C7E56',
+    marginRight: 8,
+  },
+
 });
 
 export default class ChatInfoScreen extends Component {
@@ -142,6 +157,7 @@ export default class ChatInfoScreen extends Component {
     super(props);
     this.state = {
       chatName: '',
+      chatCreator: '',
       members: [],
       error: null,
       isLoading: true,
@@ -175,6 +191,7 @@ export default class ChatInfoScreen extends Component {
         const data = await response.json();
         this.setState({
           chatName: data.name,
+          chatCreator: data.creator,
           members: data.members,
           isLoading: false,
           error: null,
@@ -320,7 +337,7 @@ export default class ChatInfoScreen extends Component {
 
   render() {
     const {
-      members, error, chatName, contacts, isLoading, editChatName, isEditingChatName,
+      members, error, chatName, contacts, isLoading, editChatName, isEditingChatName, chatCreator,
     } = this.state;
 
     if (isLoading) {
@@ -386,7 +403,14 @@ export default class ChatInfoScreen extends Component {
             </>
           )}
         </View>
-
+        <View style={styles.creatorContainer}>
+          <Text style={styles.chatCreatorText}>Chat Creator:</Text>
+          <Text>
+            {chatCreator.first_name}
+            {' '}
+            {chatCreator.last_name}
+          </Text>
+        </View>
         <View style={styles.membersContainer}>
           <Text style={styles.membersTitle}>Members</Text>
 

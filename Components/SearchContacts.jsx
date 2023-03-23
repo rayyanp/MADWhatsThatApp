@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, Button, StyleSheet, ScrollView, SectionList,
+  View, Text, TextInput, Button, StyleSheet, ScrollView, SectionList, TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // eslint-disable-next-line import/no-unresolved
@@ -99,6 +100,35 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
   },
+  startChatButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  blockButton: {
+    backgroundColor: '#4C4C4C',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  icon: {
+    fontSize: 14,
+    color: 'white',
+  },
 });
 
 export default class SearchContacts extends Component {
@@ -150,6 +180,126 @@ export default class SearchContacts extends Component {
       });
   };
 
+  removeContact = async (contact) => {
+    const { id } = contact;
+    fetch(`http://localhost:3333/api/1.0.0/user/${id}/contact`, {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          this.searchContacts(); // call getContacts() to update the list of contacts
+        } else if (response.status === 400) {
+          throw new Error("You can't remove yourself as a contact");
+        } else if (response.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (response.status === 404) {
+          throw new Error('Not Found');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Error');
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: error.message });
+      });
+  };
+
+  blockUser = async (contact) => {
+    const { id } = contact;
+    fetch(`http://localhost:3333/api/1.0.0/user/${id}/block`, {
+      method: 'POST',
+      headers: {
+        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          this.searchContacts(); // Call getContacts to update the contact list
+        } else if (response.status === 400) {
+          throw new Error("You can't block yourself as a contact");
+        } else if (response.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (response.status === 404) {
+          throw new Error('Not Found');
+        } else if (response.status === 500) {
+          throw new Error('Server Error');
+        } else {
+          throw new Error('Error');
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: error.message });
+      });
+  };
+
+  startChat = async (userId) => {
+    const { navigation } = this.props;
+    try {
+      // Create a new chat
+      const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
+        method: 'POST',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'New Chat',
+        }),
+      });
+
+      if (response.status === 201) {
+        const chat = await response.json();
+        const chatId = chat.chat_id;
+
+        // Add the selected contact to the chat
+        await this.addContactToChat(userId, chatId);
+
+        // Redirect the user to the new chat
+        navigation.navigate('ChatScreen', { chatId });
+      } else if (response.status === 400) {
+        throw new Error('Bad request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 500) {
+        throw new Error('Server Error');
+      } else {
+        throw new Error('Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // eslint-disable-next-line class-methods-use-this
+  addContactToChat = async (userId, chatId) => {
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
+        method: 'POST',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) { /* empty */ } else if (response.status === 400) {
+        throw new Error('Bad Request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   nextPage = async () => {
     const {
       limit, offset,
@@ -174,6 +324,27 @@ export default class SearchContacts extends Component {
         <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
         <Text style={styles.email}>{item.email}</Text>
       </View>
+      <TouchableOpacity
+        style={styles.startChatButton}
+        onPress={() => this.startChat(item.user_id)}
+      >
+        <Icon
+          name="chat"
+          style={styles.icon}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => this.removeContact({ id: item.user_id })}
+      >
+        <Icon name="delete" style={styles.icon} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.blockButton}
+        onPress={() => this.blockUser({ id: item.user_id })}
+      >
+        <Text style={styles.buttonText}>Block</Text>
+      </TouchableOpacity>
     </View>
   );
 
