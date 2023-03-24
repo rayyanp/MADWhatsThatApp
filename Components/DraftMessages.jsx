@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
@@ -133,11 +132,11 @@ export default class DraftMessages extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
-      this.fetchDraftsData();
+    navigation.addListener('focus', async () => {
+      await this.fetchDraftsData();
     });
   }
 
@@ -152,7 +151,7 @@ export default class DraftMessages extends Component {
     }
   };
 
-  deleteDraftMessage = async (message_id) => {
+  deleteDraftMessage = async (messageId) => {
     const { chatId } = this.props.route.params;
     try {
       // retrieve the list of draft messages from local storage
@@ -160,7 +159,7 @@ export default class DraftMessages extends Component {
       const parsed = JSON.parse(draftMessages);
 
       // filter out the message with the specified message_id
-      const filteredMessages = parsed.filter((message) => message.message_id !== message_id);
+      const filteredMessages = parsed.filter((message) => message.message_id !== messageId);
 
       // store the updated list of draft messages back in local storage
       await AsyncStorage.setItem(`draft_messages_${chatId}`, JSON.stringify(filteredMessages));
@@ -174,7 +173,7 @@ export default class DraftMessages extends Component {
   };
 
   // eslint-disable-next-line consistent-return
-  sendDraftMessage = async (message_id) => {
+  sendDraftMessage = async (messageId) => {
     const { chatId } = this.props.route.params;
 
     // Get the draft messages from local storage
@@ -182,7 +181,7 @@ export default class DraftMessages extends Component {
     const parsedDraftMessages = JSON.parse(draftMessages);
 
     // Find the draft message with the matching message ID
-    const draftMessage = parsedDraftMessages.find((message) => message.message_id === message_id);
+    const draftMessage = parsedDraftMessages.find((message) => message.message_id === messageId);
 
     // If a draft message was found, use it as the message body for the API call
     if (draftMessage) {
@@ -223,7 +222,7 @@ export default class DraftMessages extends Component {
     }
   };
 
-  editDraftMessage = async (message_id) => {
+  editDraftMessage = async (messageId) => {
     const { chatId } = this.props.route.params;
     const { editTextMessage } = this.state;
     this.setState({ isEditing: true });
@@ -234,7 +233,7 @@ export default class DraftMessages extends Component {
       const parsed = JSON.parse(draftMessages);
 
       const editedDraftMessages = parsed.map((draftMessage) => {
-        if (draftMessage.message_id === message_id) {
+        if (draftMessage.message_id === messageId) {
           return { ...draftMessage, message: editTextMessage };
         }
         return draftMessage;

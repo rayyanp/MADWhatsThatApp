@@ -1,6 +1,5 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
@@ -177,12 +176,12 @@ export default class ProfileScreen extends Component {
 
   fetchUserProfile = async () => {
     try {
-      const user_id = await AsyncStorage.getItem('whatsthat_user_id');
-      const session_token = await AsyncStorage.getItem('whatsthat_session_token');
+      const userId = await AsyncStorage.getItem('whatsthat_user_id');
+      const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
 
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
         headers: {
-          'X-Authorization': session_token,
+          'X-Authorization': sessionToken,
           Accept: 'application/json',
         },
       });
@@ -207,12 +206,12 @@ export default class ProfileScreen extends Component {
 
   get_profile_image = async () => {
     try {
-      const user_id = await AsyncStorage.getItem('whatsthat_user_id');
-      const session_token = await AsyncStorage.getItem('whatsthat_session_token');
-      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/photo`, {
+      const userId = await AsyncStorage.getItem('whatsthat_user_id');
+      const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
+      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
         method: 'GET',
         headers: {
-          'X-Authorization': session_token,
+          'X-Authorization': sessionToken,
         },
       });
       const blob = await response.blob();
@@ -227,7 +226,7 @@ export default class ProfileScreen extends Component {
   };
 
   saveProfile = async () => {
-    const user_id = await AsyncStorage.getItem('whatsthat_user_id');
+    const userId = await AsyncStorage.getItem('whatsthat_user_id');
     const { editedUser } = this.state;
 
     const updatedFields = Object.fromEntries(Object.entries(editedUser).filter(([value]) => value !== ''));
@@ -246,7 +245,7 @@ export default class ProfileScreen extends Component {
       return;
     }
 
-    fetch(`http://localhost:3333/api/1.0.0/user/${user_id}`, {
+    fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
       method: 'PATCH',
       headers: {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),

@@ -1,5 +1,4 @@
 /* eslint-disable no-dupe-keys */
-/* eslint-disable camelcase */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable radix */
 /* eslint-disable react/prop-types */
@@ -221,22 +220,22 @@ export default class ChatScreen extends Component {
       editTextMessage: '',
       isEditing: false,
       showSuccess: false,
-      user_id: null,
+      userId: null,
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
-      this.fetchChatData();
-      this.fetchUserProfile();
+    navigation.addListener('focus', async () => {
+      await this.fetchChatData();
+      await this.fetchUserProfile();
     });
   }
 
   fetchUserProfile = async () => {
-    const user_id = await AsyncStorage.getItem('whatsthat_user_id');
-    this.setState({ user_id });
+    const userId = await AsyncStorage.getItem('whatsthat_user_id');
+    this.setState({ userId });
   };
 
   fetchChatData = async () => {
@@ -368,12 +367,12 @@ export default class ChatScreen extends Component {
     }
   };
 
-  deleteMessage = async (message_id) => {
+  deleteMessage = async (messageId) => {
     const { chatId } = this.props.route.params;
 
     try {
       const response = await fetch(
-        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${message_id}`,
+        `http://localhost:3333/api/1.0.0/chat/${chatId}/message/${messageId}`,
         {
           method: 'DELETE',
           headers: {
@@ -444,7 +443,7 @@ export default class ChatScreen extends Component {
     const {
       chatData, textMessage, isLoading,
       isEditing, editMessageId, editTextMessage,
-      error, showSuccess, user_id,
+      error, showSuccess, userId,
     } = this.state;
     const { chatId } = this.props.route.params;
     const { navigation } = this.props;
@@ -507,12 +506,11 @@ export default class ChatScreen extends Component {
             ref={(ref) => (this.flatListRef = ref)}
             data={chatData.messages}
             inverted
-            initialScrollIndex={chatData.messages.length - 4}
             keyExtractor={(item) => item.message_id}
             renderItem={({ item: message }) => (
               <View style={[styles.messageContainer,
                 message.author.user_id
-                === parseInt(user_id)
+                === parseInt(userId)
                   ? styles.myMessageContainer : styles.otherMessageContainer]}
               >
                 {message.author && (
@@ -529,7 +527,7 @@ export default class ChatScreen extends Component {
                       moment(message.timestamp).isSame(new Date(), 'day') ? 'LT' : 'll',
                     )}
                   </Text>
-                  {message.author.user_id === parseInt(user_id) && (
+                  {message.author.user_id === parseInt(userId) && (
                   <View style={styles.messageOptionsContainer}>
                     <TouchableOpacity
                       style={styles.messageOptionButton}

@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
@@ -151,8 +150,8 @@ export default class Contacts extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
-      this.getContacts();
+    navigation.addListener('focus', async () => {
+      await this.getContacts();
     });
   }
 
@@ -195,11 +194,11 @@ export default class Contacts extends Component {
   };
 
   get_profile_image = async (contactId) => {
-    const session_token = await AsyncStorage.getItem('whatsthat_session_token');
+    const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
     fetch(`http://localhost:3333/api/1.0.0/user/${contactId}/photo`, {
       method: 'GET',
       headers: {
-        'X-Authorization': session_token,
+        'X-Authorization': sessionToken,
       },
     })
       .then((res) => {

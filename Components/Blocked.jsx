@@ -58,8 +58,8 @@ export default class Contacts extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
-      this.getBlockedContacts();
+    navigation.addListener('focus', async () => {
+      await this.getBlockedContacts();
     });
   }
 

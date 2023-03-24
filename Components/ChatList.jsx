@@ -103,10 +103,10 @@ export default class ChatListScreen extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
-    navigation.addListener('focus', () => {
-      this.fetchChats();
+    navigation.addListener('focus', async () => {
+      await this.fetchChats();
     });
   }
 

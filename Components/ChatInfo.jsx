@@ -168,13 +168,13 @@ export default class ChatInfoScreen extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
+    navigation.addListener('focus', async () => {
       const { chatId } = this.props.route.params;
-      this.fetchChatData(chatId);
-      this.fetchContactsData();
+      await this.fetchChatData(chatId);
+      await this.fetchContactsData();
     });
   }
 

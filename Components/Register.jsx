@@ -1,5 +1,4 @@
 /* eslint-disable object-shorthand */
-/* eslint-disable camelcase */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
@@ -66,11 +65,11 @@ export default class RegisterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      first_name: '',
-      last_name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
-      confirm_password: '',
+      confirmPassword: '',
       error: '',
     };
 
@@ -80,15 +79,15 @@ export default class RegisterScreen extends Component {
   onPressButton() {
     this.setState({ error: '' });
     const {
-      first_name, last_name, email, password, confirm_password,
+      firstName, lastName, email, password, confirmPassword,
     } = this.state;
     if (
       !(
-        first_name
-      && last_name
+        firstName
+      && lastName
       && email
       && password
-      && confirm_password
+      && confirmPassword
       )
     ) {
       this.setState({
@@ -111,7 +110,7 @@ export default class RegisterScreen extends Component {
       return;
     }
 
-    if (password !== confirm_password) {
+    if (password !== confirmPassword) {
       this.setState({ error: 'Passwords do not match' });
       return;
     }
@@ -122,8 +121,8 @@ export default class RegisterScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        first_name: first_name,
-        last_name: last_name,
+        first_name: firstName,
+        last_name: lastName,
         email: email,
         password: password,
       }),
@@ -131,11 +130,11 @@ export default class RegisterScreen extends Component {
       .then((response) => {
         if (response.status === 201) {
           this.setState({
-            first_name: '',
-            last_name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
-            confirm_password: '',
+            confirmPassword: '',
             success: true,
           });
         } else if (response.status === 400) {
@@ -154,7 +153,7 @@ export default class RegisterScreen extends Component {
 
   render() {
     const {
-      first_name, last_name, email, password, confirm_password, error, success,
+      firstName, lastName, email, password, confirmPassword, error, success,
     } = this.state;
     const { navigation } = this.props;
     return (
@@ -163,14 +162,14 @@ export default class RegisterScreen extends Component {
         <TextInput
           style={styles.input}
           placeholder="First Name"
-          onChangeText={(text) => this.setState({ first_name: text })}
-          value={first_name}
+          onChangeText={(text) => this.setState({ firstName: text })}
+          value={firstName}
         />
         <TextInput
           style={styles.input}
           placeholder="Last Name"
-          onChangeText={(text) => this.setState({ last_name: text })}
-          value={last_name}
+          onChangeText={(text) => this.setState({ lastName: text })}
+          value={lastName}
         />
         <TextInput
           style={styles.input}
@@ -189,8 +188,8 @@ export default class RegisterScreen extends Component {
           style={styles.input}
           placeholder="Confirm Password"
           secureTextEntry
-          onChangeText={(text) => this.setState({ confirm_password: text })}
-          value={confirm_password}
+          onChangeText={(text) => this.setState({ confirmPassword: text })}
+          value={confirmPassword}
         />
         {error !== '' && (
         <Text style={styles.error}>{error}</Text>
