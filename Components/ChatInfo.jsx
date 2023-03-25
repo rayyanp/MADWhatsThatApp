@@ -178,6 +178,7 @@ export default class ChatInfoScreen extends Component {
       editChatName: '',
       isEditingChatName: false,
       photos: {}, // map of contact IDs to photo URLs
+      userPhoto: null,
     };
   }
 
@@ -188,6 +189,7 @@ export default class ChatInfoScreen extends Component {
       const { chatId } = this.props.route.params;
       await this.fetchChatData(chatId);
       await this.fetchContactsData();
+      await this.get_user_image();
     });
   }
 
@@ -288,6 +290,27 @@ export default class ChatInfoScreen extends Component {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  get_user_image = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('whatsthat_user_id');
+      const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
+      const response = await fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+        method: 'GET',
+        headers: {
+          'X-Authorization': sessionToken,
+        },
+      });
+      const blob = await response.blob();
+      const data = URL.createObjectURL(blob);
+
+      this.setState({
+        userPhoto: data,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   removeMember = async (userId) => {
@@ -392,7 +415,7 @@ export default class ChatInfoScreen extends Component {
   render() {
     const {
       members, error, chatName, contacts, isLoading, editChatName, isEditingChatName, chatCreator,
-      photos,
+      photos, userPhoto,
     } = this.state;
 
     if (isLoading) {
@@ -478,9 +501,13 @@ export default class ChatInfoScreen extends Component {
                   {photos[item.user_id] ? (
                     <Image source={{ uri: photos[item.user_id] }} style={styles.photo} />
                   ) : (
-                    <Text style={styles.noPhotoText}>No photo</Text>
+                    userPhoto && <Image source={{ uri: userPhoto }} style={styles.photo} />
+                  )}
+                  {!photos[item.user_id] && !userPhoto && (
+                  <Text style={styles.noPhotoText}>No photo</Text>
                   )}
                 </View>
+
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.memberNameText}>
                     {item.first_name}
