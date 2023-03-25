@@ -72,9 +72,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E5E5E5',
   },
   contactName: {
+    flex: 1,
     fontSize: 18,
     fontWeight: '600',
     color: '#333333',
+  },
+  email: {
+    fontSize: 12,
+    color: '#666',
   },
   startChatButton: {
     backgroundColor: '#4CAF50',
@@ -177,6 +182,7 @@ export default class Contacts extends Component {
         const contacts = data.map((contact) => ({
           id: contact.user_id.toString(),
           name: `${contact.first_name} ${contact.last_name}`,
+          email: contact.email,
         }));
 
         // Call get_profile_image for each contact
@@ -379,7 +385,7 @@ export default class Contacts extends Component {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Contacts</Text>
-          <View style={styles.buttonContainer}>
+          <View style={[styles.buttonContainer, { marginLeft: 'auto' }]}>
             <TouchableOpacity
               style={styles.viewBlockedButton}
               onPress={() => navigation.navigate('Blocked')}
@@ -403,15 +409,18 @@ export default class Contacts extends Component {
             sections={orderedContacts}
             renderItem={({ item }) => (
               <View style={styles.contactContainer}>
-                <View style={styles.photoContainer}>
+                <View style={[styles.photoContainer, { width: 50, height: 50 }]}>
                   {photos[item.id] ? (
                     <Image source={{ uri: photos[item.id] }} style={styles.photo} />
                   ) : (
                     <Text style={styles.noPhotoText}>No photo</Text>
                   )}
                 </View>
-                <Text style={styles.contactName}>{item.name}</Text>
-                <View style={styles.buttonContainer}>
+                <View style={{ flex: 1, marginLeft: 10 }}>
+                  <Text style={styles.contactName}>{item.name}</Text>
+                  <Text style={styles.email}>{item.email}</Text>
+                </View>
+                <View style={[styles.buttonContainer, { alignItems: 'center', justifyContent: 'center' }]}>
                   <TouchableOpacity
                     style={styles.startChatButton}
                     onPress={() => this.startChat(item.id)}

@@ -2,7 +2,7 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, Button, StyleSheet, ScrollView, SectionList, TouchableOpacity,
+  View, Text, TextInput, Button, StyleSheet, ScrollView, SectionList, TouchableOpacity, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // eslint-disable-next-line import/no-unresolved
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flex: 1,
+    flexDirection: 'row',
   },
   name: {
     fontSize: 18,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   email: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#666',
   },
   addContactButton: {
@@ -129,6 +130,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
   },
+  photoContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  noPhotoText: {
+    fontSize: 14,
+    color: '#999999',
+  },
 });
 
 export default class SearchContacts extends Component {
@@ -141,6 +155,7 @@ export default class SearchContacts extends Component {
       offset: 0,
       users: [],
       error: '',
+      photos: {}, // map of contact IDs to photo URLs
     };
   }
 
@@ -149,34 +164,76 @@ export default class SearchContacts extends Component {
       query, searchIn, limit, offset,
     } = this.state;
 
-    fetch(`http://localhost:3333/api/1.0.0/search?q=${query}&search_in=${searchIn}&limit=${limit}&offset=${offset}`, {
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/search?q=${query}&search_in=${searchIn}&limit=${limit}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('OK');
+      } else if (response.status === 400) {
+        console.error('Bad Request');
+      } else if (response.status === 401) {
+        console.error('Unauthorized');
+      } else if (response.status === 500) {
+        console.error('Server Error');
+      }
+
+      const data = await response.json();
+      const contacts = data.map((contact) => ({
+        id: contact.user_id.toString(),
+      }));
+        // Call get_profile_image for each contact
+        // eslint-disable-next-line no-restricted-syntax
+      for (const contact of contacts) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.get_profile_image(contact.id);
+      }
+      if (data.length === 0) {
+        this.setState({ error: 'No results' });
+      } else {
+        this.setState({ users: data, error: '' });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  get_profile_image = async (contactId) => {
+    const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
+    fetch(`http://localhost:3333/api/1.0.0/user/${contactId}/photo`, {
       method: 'GET',
       headers: {
-        'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
-        Accept: 'application/json',
+        'X-Authorization': sessionToken,
       },
     })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log('OK');
-        } else if (response.status === 400) {
-          console.error('Bad Request');
-        } else if (response.status === 401) {
-          console.error('Unauthorized');
-        } else if (response.status === 500) {
-          console.error('Server Error');
+      .then((res) => {
+        if (res.status === 200) {
+          return res.blob();
         }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.length === 0) {
-          this.setState({ error: 'No results' });
+        if (res.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (res.status === 404) {
+          throw new Error('Not Found');
         } else {
-          this.setState({ users: data, error: '' });
+          throw new Error('Server Error');
         }
       })
-      .catch((error) => {
-        console.error(error);
+      .then((resBlob) => {
+        const data = URL.createObjectURL(resBlob);
+        this.setState((prevState) => ({
+          photos: {
+            ...prevState.photos,
+            [contactId]: data,
+          },
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -318,35 +375,47 @@ export default class SearchContacts extends Component {
     this.searchContacts();
   };
 
-  renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={styles.userInfo}>
-        <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
-        <Text style={styles.email}>{item.email}</Text>
+  renderItem = ({ item }) => {
+    const { photos } = this.state;
+    return (
+      <View style={styles.item}>
+        <View style={styles.userInfo}>
+          <View style={styles.photoContainer}>
+            {photos[item.user_id] ? (
+              <Image source={{ uri: photos[item.user_id] }} style={styles.photo} />
+            ) : (
+              <Text style={styles.noPhotoText}>No photo</Text>
+            )}
+          </View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
+            <Text style={styles.email}>{item.email}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.startChatButton}
+          onPress={() => this.startChat(item.user_id)}
+        >
+          <Icon
+            name="chat"
+            style={styles.icon}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => this.removeContact({ id: item.user_id })}
+        >
+          <Icon name="delete" style={styles.icon} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.blockButton}
+          onPress={() => this.blockUser({ id: item.user_id })}
+        >
+          <Text style={styles.buttonText}>Block</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.startChatButton}
-        onPress={() => this.startChat(item.user_id)}
-      >
-        <Icon
-          name="chat"
-          style={styles.icon}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => this.removeContact({ id: item.user_id })}
-      >
-        <Icon name="delete" style={styles.icon} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.blockButton}
-        onPress={() => this.blockUser({ id: item.user_id })}
-      >
-        <Text style={styles.buttonText}>Block</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   renderSectionHeader = ({ section: { title } }) => (
     <View style={styles.sectionHeaderContainer}>

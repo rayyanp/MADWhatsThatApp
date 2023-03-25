@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator,
+  View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator, Image,
 } from 'react-native';
 // eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -149,7 +149,19 @@ const styles = StyleSheet.create({
     color: '#2C7E56',
     marginRight: 8,
   },
-
+  photoContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  noPhotoText: {
+    fontSize: 14,
+    color: '#999999',
+  },
 });
 
 export default class ChatInfoScreen extends Component {
@@ -165,6 +177,7 @@ export default class ChatInfoScreen extends Component {
       editChatId: null,
       editChatName: '',
       isEditingChatName: false,
+      photos: {}, // map of contact IDs to photo URLs
     };
   }
 
@@ -225,6 +238,13 @@ export default class ChatInfoScreen extends Component {
           id: contact.user_id.toString(),
           name: `${contact.first_name} ${contact.last_name}`,
         }));
+
+        // Call get_profile_image for each contact
+        // eslint-disable-next-line no-restricted-syntax
+        for (const contact of contacts) {
+          // eslint-disable-next-line no-await-in-loop
+          await this.get_profile_image(contact.id);
+        }
         this.setState({ contacts, error: null });
       } else if (response.status === 401) {
         throw new Error('Unauthorized');
@@ -234,6 +254,40 @@ export default class ChatInfoScreen extends Component {
     } catch (error) {
       this.setState({ error: error.message });
     }
+  };
+
+  get_profile_image = async (contactId) => {
+    const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
+    fetch(`http://localhost:3333/api/1.0.0/user/${contactId}/photo`, {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.blob();
+        }
+        if (res.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (res.status === 404) {
+          throw new Error('Not Found');
+        } else {
+          throw new Error('Server Error');
+        }
+      })
+      .then((resBlob) => {
+        const data = URL.createObjectURL(resBlob);
+        this.setState((prevState) => ({
+          photos: {
+            ...prevState.photos,
+            [contactId]: data,
+          },
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   removeMember = async (userId) => {
@@ -338,6 +392,7 @@ export default class ChatInfoScreen extends Component {
   render() {
     const {
       members, error, chatName, contacts, isLoading, editChatName, isEditingChatName, chatCreator,
+      photos,
     } = this.state;
 
     if (isLoading) {
@@ -419,11 +474,20 @@ export default class ChatInfoScreen extends Component {
             keyExtractor={(item) => item.user_id.toString()}
             renderItem={({ item }) => (
               <View style={styles.memberContainer}>
-                <Text style={styles.memberNameText}>
-                  {item.first_name}
-                  {' '}
-                  {item.last_name}
-                </Text>
+                <View style={styles.photoContainer}>
+                  {photos[item.user_id] ? (
+                    <Image source={{ uri: photos[item.user_id] }} style={styles.photo} />
+                  ) : (
+                    <Text style={styles.noPhotoText}>No photo</Text>
+                  )}
+                </View>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={styles.memberNameText}>
+                    {item.first_name}
+                    {' '}
+                    {item.last_name}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={styles.removeMemberButton}
                   onPress={() => this.removeMember(item.user_id)}
@@ -443,7 +507,16 @@ export default class ChatInfoScreen extends Component {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.contactContainer}>
-                <Text style={styles.contactNameText}>{item.name}</Text>
+                <View style={styles.photoContainer}>
+                  {photos[item.id] ? (
+                    <Image source={{ uri: photos[item.id] }} style={styles.photo} />
+                  ) : (
+                    <Text style={styles.noPhotoText}>No photo</Text>
+                  )}
+                </View>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={styles.contactNameText}>{item.name}</Text>
+                </View>
                 <TouchableOpacity
                   style={styles.addMemberButton}
                   onPress={() => this.addContactToChat(item.id)}

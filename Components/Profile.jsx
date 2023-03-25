@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     height: 125,
     borderRadius: 75,
     borderWidth: 2,
-    borderColor: '#6B55E6',
+    borderColor: '#4CAF50',
   },
   noPhotoText: {
     fontSize: 16,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#6B55E6',
+    backgroundColor: '#4CAF50',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   saveButton: {
-    backgroundColor: '#6B55E6',
+    backgroundColor: '#4CAF50',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,

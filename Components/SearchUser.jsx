@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Button, StyleSheet, ScrollView, SectionList,
+  View, Text, TextInput, TouchableOpacity, Button, StyleSheet, ScrollView, SectionList, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flex: 1,
+    flexDirection: 'row',
   },
   name: {
     fontSize: 18,
@@ -118,6 +119,19 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 5,
   },
+  photoContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  photo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  noPhotoText: {
+    fontSize: 14,
+    color: '#999999',
+  },
 });
 
 export default class SearchUsers extends Component {
@@ -131,6 +145,7 @@ export default class SearchUsers extends Component {
       users: [],
       showSuccess: false,
       error: '',
+      photos: {}, // map of contact IDs to photo URLs
     };
   }
 
@@ -163,7 +178,17 @@ export default class SearchUsers extends Component {
         }
         return response.json();
       })
-      .then((data) => {
+      .then(async (data) => {
+        const users = data.map((user) => ({
+          ...user,
+          id: user.user_id.toString(),
+        }));
+        // Call get_profile_image for each contact
+        // eslint-disable-next-line no-restricted-syntax
+        for (const user of users) {
+          // eslint-disable-next-line no-await-in-loop
+          await this.get_profile_image(user.id);
+        }
         if (data.length === 0) {
           this.setState({ error: 'No results' });
         } else {
@@ -172,6 +197,40 @@ export default class SearchUsers extends Component {
       })
       .catch((error) => {
         console.error(error);
+      });
+  };
+
+  get_profile_image = async (userId) => {
+    const sessionToken = await AsyncStorage.getItem('whatsthat_session_token');
+    fetch(`http://localhost:3333/api/1.0.0/user/${userId}/photo`, {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken,
+      },
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.blob();
+        }
+        if (res.status === 401) {
+          throw new Error('Unauthorized');
+        } else if (res.status === 404) {
+          throw new Error('Not Found');
+        } else {
+          throw new Error('Server Error');
+        }
+      })
+      .then((resBlob) => {
+        const data = URL.createObjectURL(resBlob);
+        this.setState((prevState) => ({
+          photos: {
+            ...prevState.photos,
+            [userId]: data,
+          },
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -220,19 +279,31 @@ export default class SearchUsers extends Component {
       });
   };
 
-  renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={styles.userInfo}>
-        <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
-        <Text style={styles.email}>{item.email}</Text>
+  renderItem = ({ item }) => {
+    const { photos } = this.state;
+    return (
+      <View style={styles.item}>
+        <View style={styles.userInfo}>
+          <View style={styles.photoContainer}>
+            {photos[item.user_id] ? (
+              <Image source={{ uri: photos[item.user_id] }} style={styles.photo} />
+            ) : (
+              <Text style={styles.noPhotoText}>No photo</Text>
+            )}
+          </View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.name}>{`${item.given_name} ${item.family_name}`}</Text>
+            <Text style={styles.email}>{item.email}</Text>
+          </View>
+        </View>
+        <Button
+          title="Add Contact"
+          onPress={() => this.addContact(item.user_id)}
+          style={styles.addContactButton}
+        />
       </View>
-      <Button
-        title="Add Contact"
-        onPress={() => this.addContact(item.user_id)}
-        style={styles.addContactButton}
-      />
-    </View>
-  );
+    );
+  };
 
   renderSectionHeader = ({ section: { title } }) => (
     <View style={styles.sectionHeaderContainer}>
