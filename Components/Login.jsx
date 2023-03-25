@@ -2,10 +2,11 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator,
+  View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Image,
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';
 import globalStyles from '../globalStyles';
 
 const styles = StyleSheet.create({
@@ -184,6 +185,9 @@ export default class LoginScreen extends Component {
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
+            <View style={globalStyles.logoContainer}>
+              <Image source={WhatsThatLogo} style={globalStyles.logo} />
+            </View>
             <Text style={styles.header}>Login</Text>
             <Text style={styles.errorText}>{error}</Text>
             <TextInput

@@ -2,10 +2,11 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity,
+  View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
 import globalStyles from '../globalStyles';
+import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -58,6 +59,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  logoContainer: {
+    top: 20,
   },
 });
 
@@ -158,6 +162,9 @@ export default class RegisterScreen extends Component {
     const { navigation } = this.props;
     return (
       <View style={globalStyles.container}>
+        <View style={[globalStyles.logoContainer, styles.logoContainer]}>
+          <Image source={WhatsThatLogo} style={globalStyles.logo} />
+        </View>
         <Text style={styles.title}>Create Account</Text>
         <TextInput
           style={styles.input}

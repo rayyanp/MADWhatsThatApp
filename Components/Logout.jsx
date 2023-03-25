@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View, Text, TouchableOpacity, Image, StyleSheet,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import globalStyles from '../globalStyles';
+import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
@@ -27,7 +30,35 @@ const styles = {
     textAlign: 'center',
     marginVertical: 10,
   },
-};
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  confirmContainer: {
+    alignItems: 'center',
+  },
+  confirmText: {
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  confirmButton: {
+    backgroundColor: '#2980b6',
+    borderRadius: 5,
+    padding: 10,
+    width: '80%',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#dcdcdc',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    width: '80%',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default class Logout extends Component {
   constructor(props) {
@@ -72,22 +103,48 @@ export default class Logout extends Component {
   };
 
   render() {
-    const { loading, error } = this.state;
+    const { loading, error, showConfirmation } = this.state;
 
     return (
       <View style={globalStyles.container}>
+        <View style={[globalStyles.logoContainer, styles.logoContainer]}>
+          <Image source={WhatsThatLogo} style={globalStyles.logo} />
+        </View>
         {error && <Text style={styles.errorText}>{error}</Text>}
-        <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={this.logout}
-          disabled={loading}
-        >
-          {loading ? (
-            <Text style={styles.buttonText}>Loading...</Text>
-          ) : (
-            <Text style={styles.buttonText}>Logout</Text>
-          )}
-        </TouchableOpacity>
+        {showConfirmation ? (
+          <View style={styles.confirmContainer}>
+            <Text style={styles.confirmText}>Are you sure you want to logout?</Text>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={this.logout}
+              disabled={loading}
+            >
+              {loading ? (
+                <Text style={styles.buttonText}>Loading...</Text>
+              ) : (
+                <Text style={styles.buttonText}>Yes, logout</Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => this.setState({ showConfirmation: false })}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => this.setState({ showConfirmation: true })}
+            disabled={loading}
+          >
+            {loading ? (
+              <Text style={styles.buttonText}>Loading...</Text>
+            ) : (
+              <Text style={styles.buttonText}>Logout</Text>
+            )}
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
