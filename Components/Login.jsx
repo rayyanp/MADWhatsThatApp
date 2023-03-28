@@ -88,7 +88,7 @@ export default class LoginScreen extends Component {
   componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', () => {
+    this.unsubscribe = navigation.addListener('focus', () => {
       this.setState({
         email: '',
         password: '',
@@ -96,6 +96,10 @@ export default class LoginScreen extends Component {
         loading: false,
       });
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   onPressButton() {
@@ -139,7 +143,6 @@ export default class LoginScreen extends Component {
     })
       .then(async (response) => {
         if (response.status === 200) {
-          console.log('Login Successful');
           return response.json();
         } if (response.status === 400) {
           throw new Error('Invalid Request');
@@ -155,12 +158,10 @@ export default class LoginScreen extends Component {
           await AsyncStorage.setItem('whatsthat_session_token', responseJson.token);
           navigation.navigate('MainAppNav');
         } catch (error) {
-          console.error(error);
           throw new Error('Error setting items in AsyncStorage');
         }
       })
       .catch((error) => {
-        console.error(error);
         let errorMessage;
         if (error.message === 'Invalid Request') {
           errorMessage = 'Invalid email or password';

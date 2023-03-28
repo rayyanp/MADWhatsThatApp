@@ -158,7 +158,7 @@ export default class ProfileScreen extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.fetchUserProfile();
       await this.get_profile_image();
 
@@ -172,6 +172,10 @@ export default class ProfileScreen extends Component {
         },
       }));
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   fetchUserProfile = async () => {
@@ -199,7 +203,6 @@ export default class ProfileScreen extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error(error);
       this.setState({ errorMessage: error.message, loading: false });
     }
   };
@@ -220,8 +223,8 @@ export default class ProfileScreen extends Component {
       this.setState({
         photo: data,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      this.setState({ errorMessage: error.message });
     }
   };
 
@@ -274,7 +277,6 @@ export default class ProfileScreen extends Component {
         this.setState({ user }, this.fetchUserProfile);
       })
       .catch((error) => {
-        console.error(error);
         this.setState({ errorMessage: error.message });
       });
   };

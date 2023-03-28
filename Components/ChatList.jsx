@@ -105,9 +105,13 @@ export default class ChatListScreen extends Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.fetchChats();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   fetchChats = async () => {
@@ -145,7 +149,7 @@ export default class ChatListScreen extends Component {
         });
         this.setState({ chats });
       } else if (response.status === 401) {
-        throw new Error('Unauthorised');
+        throw new Error('Unauthorized');
       } else if (response.status === 500) {
         throw new Error('Server Error');
       } else {

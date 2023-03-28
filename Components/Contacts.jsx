@@ -29,8 +29,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   buttonContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginLeft: 'auto',
   },
   viewBlockedButton: {
     paddingVertical: 8,
@@ -71,6 +73,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
   },
+  individualContact: {
+    flex: 1,
+    marginLeft: 10,
+  },
   contactName: {
     flex: 1,
     fontSize: 18,
@@ -109,6 +115,8 @@ const styles = StyleSheet.create({
   photoContainer: {
     alignItems: 'center',
     marginBottom: 16,
+    width: 50,
+    height: 50,
   },
   photo: {
     width: 50,
@@ -155,9 +163,13 @@ export default class Contacts extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.getContacts();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   getContacts = async () => {
@@ -228,8 +240,8 @@ export default class Contacts extends Component {
           },
         }));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        this.setState({ error: error.message });
       });
   };
 
@@ -325,7 +337,7 @@ export default class Contacts extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error(error);
+      this.setState({ error: error.message });
     }
   };
 
@@ -349,7 +361,7 @@ export default class Contacts extends Component {
         throw new Error('Server Error');
       }
     } catch (error) {
-      console.error(error);
+      this.setState({ error: error.message });
     }
   };
 
@@ -385,7 +397,7 @@ export default class Contacts extends Component {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Contacts</Text>
-          <View style={[styles.buttonContainer, { marginLeft: 'auto' }]}>
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.viewBlockedButton}
               onPress={() => navigation.navigate('Blocked')}
@@ -409,18 +421,18 @@ export default class Contacts extends Component {
             sections={orderedContacts}
             renderItem={({ item }) => (
               <View style={styles.contactContainer}>
-                <View style={[styles.photoContainer, { width: 50, height: 50 }]}>
+                <View style={styles.photoContainer}>
                   {photos[item.id] ? (
                     <Image source={{ uri: photos[item.id] }} style={styles.photo} />
                   ) : (
                     <Text style={styles.noPhotoText}>No photo</Text>
                   )}
                 </View>
-                <View style={{ flex: 1, marginLeft: 10 }}>
+                <View style={styles.individualContact}>
                   <Text style={styles.contactName}>{item.name}</Text>
                   <Text style={styles.email}>{item.email}</Text>
                 </View>
-                <View style={[styles.buttonContainer, { alignItems: 'center', justifyContent: 'center' }]}>
+                <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.startChatButton}
                     onPress={() => this.startChat(item.id)}

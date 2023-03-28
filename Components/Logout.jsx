@@ -70,7 +70,6 @@ export default class Logout extends Component {
   }
 
   logout = async () => {
-    console.log('logout');
     const { navigation } = this.props;
     this.setState({ loading: true });
 

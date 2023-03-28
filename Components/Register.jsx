@@ -148,10 +148,7 @@ export default class RegisterScreen extends Component {
         }
       })
       .catch((error) => {
-        console.error(error);
-        this.setState({
-          error: 'An error occurred during registration',
-        });
+        this.setState({ error: error.message });
       });
   }
 

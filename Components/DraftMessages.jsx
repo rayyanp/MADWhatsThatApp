@@ -135,9 +135,13 @@ export default class DraftMessages extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.fetchDraftsData();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   fetchDraftsData = async () => {
@@ -146,8 +150,7 @@ export default class DraftMessages extends Component {
       const savedMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
       this.setState({ chatData: JSON.parse(savedMessages) || [], isLoading: false });
     } catch (error) {
-      console.error('Error fetching draft messages:', error);
-      this.setState({ isLoading: false, error });
+      this.setState({ isLoading: false, error: 'Error fetching draft messages' });
     }
   };
 
@@ -167,8 +170,7 @@ export default class DraftMessages extends Component {
       // update the state to reflect the deleted message
       this.fetchDraftsData();
     } catch (error) {
-      console.error('Error deleting message:', error);
-      this.setState({ error });
+      this.setState({ error: 'Error deleting message' });
     }
   };
 
@@ -216,8 +218,7 @@ export default class DraftMessages extends Component {
           throw new Error('Error');
         }
       } catch (error) {
-        console.error('Error sending message:', error);
-        this.setState({ error });
+        this.setState({ error: 'Error sending message' });
       }
     }
   };
@@ -250,8 +251,7 @@ export default class DraftMessages extends Component {
       });
       this.fetchDraftsData();
     } catch (error) {
-      console.error('Error editing message:', error);
-      this.setState({ isEditing: false, error });
+      this.setState({ isEditing: false, error: 'Error editing message:' });
     }
   };
 

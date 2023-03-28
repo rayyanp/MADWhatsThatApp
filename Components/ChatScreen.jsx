@@ -227,10 +227,14 @@ export default class ChatScreen extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.fetchChatData();
       await this.fetchUserProfile();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   fetchUserProfile = async () => {
@@ -267,7 +271,6 @@ export default class ChatScreen extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error('Error fetching chat data:', error);
       this.setState({ error, isLoading: false });
     }
   };
@@ -318,7 +321,6 @@ export default class ChatScreen extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error('Error sending message:', error);
       this.setState({ error });
     }
   };
@@ -362,7 +364,6 @@ export default class ChatScreen extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error('Error editing message:', error);
       this.setState({ isEditing: false, error });
     }
   };
@@ -395,7 +396,6 @@ export default class ChatScreen extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error('Error deleting message:', error);
       this.setState({ error });
     }
   };
@@ -434,7 +434,6 @@ export default class ChatScreen extends Component {
       // Clear the message text input
       this.setState({ textMessage: '', showSuccess: true });
     } catch (error) {
-      console.error(error);
       this.setState({ error: 'Failed to save message. Please try again later.' });
     }
   };

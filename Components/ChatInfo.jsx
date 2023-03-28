@@ -99,6 +99,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
+  individualMember: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   memberNameText: {
     flex: 1, fontSize: 16,
   },
@@ -185,12 +190,16 @@ export default class ChatInfoScreen extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       const { chatId } = this.props.route.params;
       await this.fetchChatData(chatId);
       await this.fetchContactsData();
       await this.get_user_image();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   fetchChatData = async (chatId) => {
@@ -287,8 +296,8 @@ export default class ChatInfoScreen extends Component {
           },
         }));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        this.setState({ error: error.message });
       });
   };
 
@@ -308,8 +317,8 @@ export default class ChatInfoScreen extends Component {
       this.setState({
         userPhoto: data,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      this.setState({ error: error.message });
     }
   };
 
@@ -541,7 +550,7 @@ export default class ChatInfoScreen extends Component {
                     <Text style={styles.noPhotoText}>No photo</Text>
                   )}
                 </View>
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={styles.individualMember}>
                   <Text style={styles.contactNameText}>{item.name}</Text>
                 </View>
                 <TouchableOpacity

@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#E0E0E0',
     borderBottomWidth: 1,
   },
+  individualContact: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   contactName: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -76,9 +81,13 @@ export default class BlockedContacts extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
 
-    navigation.addListener('focus', async () => {
+    this.unsubscribe = navigation.addListener('focus', async () => {
       await this.getBlockedContacts();
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
   getBlockedContacts = async () => {
@@ -110,7 +119,7 @@ export default class BlockedContacts extends Component {
           throw new Error('Data is not an array');
         }
       } else if (response.status === 401) {
-        throw new Error('Unauthorised');
+        throw new Error('Unauthorized');
       } else if (response.status === 500) {
         throw new Error('Server Error');
       } else {
@@ -180,7 +189,7 @@ export default class BlockedContacts extends Component {
         }));
       })
       .catch((err) => {
-        console.log(err);
+        throw err;
       });
   };
 
@@ -195,7 +204,7 @@ export default class BlockedContacts extends Component {
             <Text style={styles.noPhotoText}>No photo</Text>
           )}
         </View>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={styles.individualContact}>
           <Text style={styles.contactName}>{item.name}</Text>
           <Text style={styles.email}>{item.email}</Text>
         </View>

@@ -173,14 +173,12 @@ export default class SearchContacts extends Component {
         },
       });
 
-      if (response.status === 200) {
-        console.log('OK');
-      } else if (response.status === 400) {
-        console.error('Bad Request');
+      if (response.status === 200) { /* empty */ } else if (response.status === 400) {
+        throw new Error('Bad Request');
       } else if (response.status === 401) {
-        console.error('Unauthorized');
+        throw new Error('Unauthorized');
       } else if (response.status === 500) {
-        console.error('Server Error');
+        throw new Error('Server Error');
       }
 
       const data = await response.json();
@@ -199,7 +197,7 @@ export default class SearchContacts extends Component {
         this.setState({ users: data, error: '' });
       }
     } catch (error) {
-      console.error(error);
+      this.setState({ error: error.message });
     }
   };
 
@@ -232,8 +230,8 @@ export default class SearchContacts extends Component {
           },
         }));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        this.setState({ error: error.message });
       });
   };
 
@@ -329,7 +327,7 @@ export default class SearchContacts extends Component {
         throw new Error('Error');
       }
     } catch (error) {
-      console.error(error);
+      this.setState({ error: error.message });
     }
   };
 
@@ -353,7 +351,7 @@ export default class SearchContacts extends Component {
         throw new Error('Server Error');
       }
     } catch (error) {
-      console.error(error);
+      this.setState({ error: error.message });
     }
   };
 

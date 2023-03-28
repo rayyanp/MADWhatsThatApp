@@ -167,14 +167,12 @@ export default class SearchUsers extends Component {
       },
     })
       .then((response) => {
-        if (response.status === 200) {
-          console.log('OK');
-        } else if (response.status === 400) {
-          console.error('Bad Request');
+        if (response.status === 200) { /* empty */ } else if (response.status === 400) {
+          throw new Error('Bad Request');
         } else if (response.status === 401) {
-          console.error('Unauthorized');
+          throw new Error('Unauthorized');
         } else if (response.status === 500) {
-          console.error('Server Error');
+          throw new Error('Server Error');
         }
         return response.json();
       })
@@ -196,7 +194,7 @@ export default class SearchUsers extends Component {
         }
       })
       .catch((error) => {
-        console.error(error);
+        this.setState({ error: error.message });
       });
   };
 
@@ -229,8 +227,8 @@ export default class SearchUsers extends Component {
           },
         }));
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        this.setState({ error: error.message });
       });
   };
 
@@ -262,20 +260,19 @@ export default class SearchUsers extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
-          console.log('User added to contacts');
           this.setState({ showSuccess: true });
         } else if (response.status === 400) {
-          console.error('You cant add yourself as a contact');
+          throw new Error('You cant add yourself as a contact');
         } else if (response.status === 401) {
-          console.error('Unauthorized');
+          throw new Error('Unauthorized');
         } else if (response.status === 404) {
-          console.error('User not found');
+          throw new Error('User not found');
         } else if (response.status === 500) {
-          console.error('Server Error');
+          throw new Error('Server Error');
         }
       })
       .catch((error) => {
-        console.error(error);
+        this.setState({ error: error.message });
       });
   };
 
