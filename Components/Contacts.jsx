@@ -1,11 +1,13 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, SectionList, Image,
+  View, Text, StyleSheet, TouchableOpacity, SectionList, Image, TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Modal from 'react-native-modal';
 
 const styles = StyleSheet.create({
   container: {
@@ -144,6 +146,44 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
   },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  newChatInput: {
+    width: '100%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  startChatButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: '#ccc',
+    borderRadius: 20,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
 });
 
 export default class Contacts extends Component {
@@ -157,6 +197,9 @@ export default class Contacts extends Component {
       contacts: [],
       photos: {}, // map of contact IDs to photo URLs
       error: null,
+      visibleModal: null,
+      newChatName: '',
+      selectedContact: null,
     };
   }
 
@@ -314,7 +357,7 @@ export default class Contacts extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: 'New Chat',
+          name: this.state.newChatName,
         }),
       });
 
@@ -324,7 +367,7 @@ export default class Contacts extends Component {
 
         // Add the selected contact to the chat
         await this.addContactToChat(userId, chatId);
-
+        this.setState({ newChatName: '' });
         // Redirect the user to the new chat
         navigation.navigate('ChatScreen', { chatId });
       } else if (response.status === 400) {
@@ -365,8 +408,43 @@ export default class Contacts extends Component {
     }
   };
 
+  // eslint-disable-next-line class-methods-use-this
+  renderButton = (onPress) => (
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={styles.closeButton}
+      >
+        <Text style={styles.closeButtonText}>Close</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  renderModalContent = (selectedContact) => (
+    <View style={styles.modalContent}>
+      <TextInput
+        style={styles.newChatInput}
+        onChangeText={(text) => this.setState({ newChatName: text })}
+        value={this.state.newChatName}
+        placeholder="Enter new chat name"
+      />
+      <TouchableOpacity
+        style={styles.startChatButton}
+        onPress={() => {
+          this.setState({ visibleModal: null });
+          this.startChat(selectedContact.id);
+        }}
+      >
+        <Text>Start Chat</Text>
+      </TouchableOpacity>
+      {this.renderButton(() => this.setState({ visibleModal: null }))}
+    </View>
+  );
+
   render() {
-    const { contacts, error, photos } = this.state;
+    const {
+      contacts, error, photos, visibleModal, selectedContact,
+    } = this.state;
     const { navigation } = this.props;
 
     // eslint-disable-next-line no-shadow
@@ -395,6 +473,18 @@ export default class Contacts extends Component {
 
     return (
       <View style={styles.container}>
+        <Modal
+          isVisible={visibleModal !== null}
+          onBackdropPress={() => this.setState({ visibleModal: null })}
+        >
+          {selectedContact ? (
+            this.renderModalContent(selectedContact)
+          ) : (
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>No contact selected.</Text>
+            </View>
+          )}
+        </Modal>
         <View style={styles.headerContainer}>
           <Text style={styles.header}>Contacts</Text>
           <View style={styles.buttonContainer}>
@@ -435,12 +525,9 @@ export default class Contacts extends Component {
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     style={styles.startChatButton}
-                    onPress={() => this.startChat(item.id)}
+                    onPress={() => this.setState({ visibleModal: true, selectedContact: item })}
                   >
-                    <Icon
-                      name="chat"
-                      style={styles.icon}
-                    />
+                    <Icon name="chat" style={styles.icon} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.deleteButton}
