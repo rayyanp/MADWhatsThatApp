@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-access-state-in-setstate */
 /* eslint-disable react/prop-types */
@@ -6,6 +7,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons';
 import * as EmailValidator from 'email-validator';
 // eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   profileContainer: {
-    paddingVertical: 20,
+    paddingVertical: 10,
     alignItems: 'center',
   },
   name: {
@@ -130,11 +132,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  errorContainer: {
+    backgroundColor: '#FF4136',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    marginVertical: 8,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   errorText: {
-    color: 'red',
-    fontSize: 16,
-    alignSelf: 'center',
-    marginTop: 20,
+    color: '#fff',
+    fontSize: 14,
+    marginLeft: 8,
+    marginRight: 16,
+  },
+  closeButton: {
+    padding: 6,
+    borderRadius: 16,
   },
 });
 
@@ -143,12 +160,11 @@ export default class ProfileScreen extends Component {
     super(props);
     this.state = {
       user: {},
-      editedUser: {
-        first_name: '',
-        last_name: '',
-        email: '',
-        password: '',
-      },
+      original_data: {},
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
       photo: null,
       errorMessage: null,
       loading: true,
@@ -163,13 +179,11 @@ export default class ProfileScreen extends Component {
       await this.get_profile_image();
 
       // Pre-populate the form with existing details
-      this.setState((prevState) => ({
-        editedUser: {
-          ...prevState.editedUser,
-          first_name: this.state.user.first_name,
-          last_name: this.state.user.last_name,
-          email: this.state.user.email,
-        },
+      this.setState(() => ({
+        original_data: this.state.user,
+        first_name: this.state.user.first_name,
+        last_name: this.state.user.last_name,
+        email: this.state.user.email,
       }));
     });
   }
@@ -230,22 +244,36 @@ export default class ProfileScreen extends Component {
 
   saveProfile = async () => {
     const userId = await AsyncStorage.getItem('whatsthat_user_id');
-    const { editedUser } = this.state;
 
-    const updatedFields = Object.fromEntries(Object.entries(editedUser).filter(([value]) => value !== ''));
+    const updatedData = {};
 
-    if (editedUser.email && !EmailValidator.validate(editedUser.email)) {
+    if (this.state.first_name !== this.state.original_data.first_name) {
+      updatedData.first_name = this.state.first_name;
+    }
+
+    if (this.state.last_name !== this.state.original_data.last_name) {
+      updatedData.last_name = this.state.last_name;
+    }
+
+    if (this.state.email !== this.state.original_data.email) {
+      updatedData.email = this.state.email;
+    }
+
+    if (updatedData.email && !EmailValidator.validate(updatedData.email)) {
       this.setState({ errorMessage: 'Must enter valid email' });
       return;
     }
 
-    const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-    if (editedUser.password && !PASSWORD_REGEX.test(editedUser.password)) {
-      this.setState({
-        errorMessage:
-          "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)",
-      });
-      return;
+    if (this.state.password !== '') {
+      const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+      if (!PASSWORD_REGEX.test(this.state.password)) {
+        this.setState({
+          errorMessage:
+            "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)",
+        });
+        return;
+      }
+      updatedData.password = this.state.password;
     }
 
     fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {
@@ -254,7 +282,7 @@ export default class ProfileScreen extends Component {
         'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedFields),
+      body: JSON.stringify(updatedData),
     })
       .then((response) => {
         if (response.status === 200) {
@@ -281,21 +309,9 @@ export default class ProfileScreen extends Component {
       });
   };
 
-  userInput = (key, value) => {
-    const {
-      editedUser,
-    } = this.state;
-    this.setState({
-      editedUser: {
-        ...editedUser,
-        [key]: value,
-      },
-    });
-  };
-
   render() {
     const {
-      user, editedUser, errorMessage, loading, photo,
+      user, errorMessage, loading, photo,
     } = this.state;
     const { navigation } = this.props;
 
@@ -340,8 +356,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter first name"
-                    value={editedUser.first_name}
-                    onChangeText={(text) => this.userInput('first_name', text)}
+                    value={this.state.first_name}
+                    onChangeText={(val) => this.setState({ first_name: val })}
                   />
                   <Icon name="person" size={24} color="#999" />
                 </View>
@@ -353,8 +369,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter last name"
-                    value={editedUser.last_name}
-                    onChangeText={(text) => this.userInput('last_name', text)}
+                    value={this.state.last_name}
+                    onChangeText={(val) => this.setState({ last_name: val })}
                   />
                   <Icon name="person" size={24} color="#999" />
                 </View>
@@ -366,8 +382,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter email"
-                    value={editedUser.email}
-                    onChangeText={(text) => this.userInput('email', text)}
+                    value={this.state.email}
+                    onChangeText={(val) => this.setState({ email: val })}
                   />
                   <Icon name="email" size={24} color="#999" />
                 </View>
@@ -379,8 +395,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter password"
-                    value={editedUser.password}
-                    onChangeText={(text) => this.userInput('password', text)}
+                    value={this.state.password}
+                    onChangeText={(val) => this.setState({ password: val })}
                     secureTextEntry
                   />
                   <Icon name="lock" size={24} color="#999" />
@@ -390,10 +406,20 @@ export default class ProfileScreen extends Component {
               <TouchableOpacity style={styles.saveButton} onPress={this.saveProfile}>
                 <Text style={styles.saveButtonText}>Save</Text>
               </TouchableOpacity>
+              {errorMessage !== null && (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{errorMessage}</Text>
+                <TouchableOpacity
+                  onPress={() => this.setState({ errorMessage: null })}
+                  style={styles.closeButton}
+                >
+                  <Ionicons name="close-circle" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
+              )}
             </View>
           </View>
         )}
-        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
       </View>
     );
   }
