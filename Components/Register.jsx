@@ -5,6 +5,8 @@ import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Ionicons } from '@expo/vector-icons';
 import globalStyles from '../globalStyles';
 import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';
 
@@ -28,10 +30,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     paddingLeft: 10,
-    marginBottom: 20,
-  },
-  error: {
-    color: 'red',
     marginBottom: 20,
   },
   createAccountButton: {
@@ -62,6 +60,43 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     top: 20,
+  },
+  successContainer: {
+    backgroundColor: '#eaffea',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 10,
+    position: 'relative',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  successText: {
+    color: '#008000',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  errorContainer: {
+    backgroundColor: '#FF4136',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    marginVertical: 8,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  errorText: {
+    color: '#fff',
+    fontSize: 14,
+    marginLeft: 8,
+    marginRight: 16,
+  },
+  closeButton: {
+    padding: 6,
+    borderRadius: 16,
   },
 });
 
@@ -195,24 +230,42 @@ export default class RegisterScreen extends Component {
           onChangeText={(text) => this.setState({ confirmPassword: text })}
           value={confirmPassword}
         />
-        {error !== '' && (
-        <Text style={styles.error}>{error}</Text>
-        )}
         <TouchableOpacity
           style={styles.button}
           onPress={this.onPressButton}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
-        {success && (
-        <Text style={styles.success}>Registration Successful, you may now login</Text>
-        )}
         <TouchableOpacity
           style={styles.createAccountButton}
           onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.createAccountText}>Login</Text>
         </TouchableOpacity>
+        {error !== '' && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity
+            onPress={() => this.setState({ error: '' })}
+            style={styles.closeButton}
+          >
+            <Ionicons name="close-circle" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        )}
+        {success && (
+        <View style={styles.successContainer}>
+          <TouchableOpacity
+            onPress={() => this.setState({ success: false })}
+            style={styles.closeButton}
+          >
+            <Ionicons name="close-circle" size={24} color="black" />
+          </TouchableOpacity>
+          <View style={styles.textContainer}>
+            <Text style={styles.successText}>Registration Successful! You may now Login.</Text>
+          </View>
+        </View>
+        )}
       </View>
     );
   }
