@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-shorthand */
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react';
@@ -5,6 +6,7 @@ import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Image,
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';
 import globalStyles from '../globalStyles';
@@ -20,10 +22,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 24,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 16,
   },
   input: {
     backgroundColor: 'white',
@@ -69,6 +67,31 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  errorContainer: {
+    backgroundColor: '#FF4136',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    marginVertical: 8,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  errorText: {
+    color: '#fff',
+    fontSize: 14,
+    marginLeft: 8,
+    marginRight: 16,
+  },
+  closeButton: {
+    padding: 6,
+    borderRadius: 16,
   },
 });
 
@@ -190,7 +213,17 @@ export default class LoginScreen extends Component {
               <Image source={WhatsThatLogo} style={globalStyles.logo} />
             </View>
             <Text style={styles.header}>Login</Text>
-            <Text style={styles.errorText}>{error}</Text>
+            {error !== '' && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+              <TouchableOpacity
+                onPress={() => this.setState({ error: '' })}
+                style={styles.closeButton}
+              >
+                <Ionicons name="close-circle" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            )}
             <TextInput
               style={styles.input}
               onChangeText={(text) => this.setState({ email: text })}
