@@ -11,8 +11,8 @@ const globalStyles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   logo: {
-    width: 500,
-    height: 125,
+    width: 400,
+    height: 100,
     resizeMode: 'contain',
     borderWidth: 2,
     borderColor: '#fff',

@@ -328,6 +328,12 @@ export default class SearchUsers extends Component {
         </View>
         {error ? (
           <View style={styles.errorContainer}>
+            <TouchableOpacity
+              onPress={() => this.setState({ error: '' })}
+              style={styles.closeButton}
+            >
+              <Ionicons name="close-circle" size={24} color="black" />
+            </TouchableOpacity>
             <Text style={styles.errorText}>{error}</Text>
           </View>
         ) : (

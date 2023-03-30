@@ -8,6 +8,8 @@ All endpoints have been implemented. Some endpoints have been implemented multip
 
 All user input validated.
 
+Error handling for all pages completed and displayed appropriately on the circumstance.
+
 App.js: Navigation for Login.jsx, Register.jsx and MainAppNav.jsx
 
 /Components:
@@ -32,12 +34,12 @@ Profile.jsx: Users can view their profile which shows their profile photo, first
 
 CameraSend.jsx: Users can access their devices camera and take pictures which will be sent to the server and uploaded as their profile photo. Endpoints implemented: Upload a profile photo.
 
-Contacts.jsx: Users can view all their contacts. They can also view all their contacts profile photos next to their name and email. Also they are able to start a conversation with a contact, delete a contact or block a contact/user. Users can also navigate to Blocked.jsx which displays all blocked contacts. Users can also search for contacts by clicking the search button which will navigate to SearchContacts.jsx. Endpoints implemented: View your contacts, Get a users profile photo, Start a conversation, Remove a contact, Block a user.
+Contacts.jsx: Users can view all their contacts. They can also view all their contacts profile photos next to their name and email. Also they are able to start a conversation with a contact via a modal, delete a contact or block a contact/user. Users can also navigate to Blocked.jsx which displays all blocked contacts. Users can also search for contacts by clicking the search button which will navigate to SearchContacts.jsx. Endpoints implemented: View your contacts, Get a users profile photo, Start a conversation, Remove a contact, Block a user.
 
 Blocked.jsx: Users can view all their contacts/users. They can also view all the blocked users profile photos next to their name and email. Also they are able to unblock a contact/user.
 Endpoints implemented: View all blocked users, Get a users profile photo, Unblock a user.
 
-SearchContacts.jsx: Users can search for contacts by inputting either their first name, last name or email and clicking the search button. The contacts that match the search will be displayed with their name and email and profile photo. If the search results are more than 20 then pagination is used for users to view the next set of results by clicking the next page or previous page to view the previous results. Users can also start a conversation with a contact, delete a contact or block a contact/user. Endpoints implemented: Search for users, Get a users profile photo, Start a conversation, Remove a contact, Block a user.
+SearchContacts.jsx: Users can search for contacts by inputting either their first name, last name or email and clicking the search button. The contacts that match the search will be displayed with their name and email and profile photo. If the search results are more than 20 then pagination is used for users to view the next set of results by clicking the next page or previous page to view the previous results. Users can also start a conversation with a contact via modal, delete a contact or block a contact/user. Endpoints implemented: Search for users, Get a users profile photo, Start a conversation, Remove a contact, Block a user.
 
 SearchUser.jsx: Users can search for other users by inputting either their first name, last name or email and clicking the search button. The users that match the search will be displayed with their name and email and profile photo. If the search results are more than 20 then pagination is used for users to view the next set of results by clicking the next page or previous page to view the previous results. Users can also add other users to their contacts. Endpoints implemented: Search for users, Get a users profile photo, Add a contact.
 

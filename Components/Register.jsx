@@ -63,19 +63,20 @@ const styles = StyleSheet.create({
   },
   successContainer: {
     backgroundColor: '#eaffea',
-    padding: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-    position: 'relative',
-  },
-  textContainer: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 16,
+    marginVertical: 8,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 30,
+    justifyContent: 'space-between',
   },
   successText: {
     color: '#008000',
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: 14,
+    marginLeft: 8,
+    marginRight: 16,
   },
   errorContainer: {
     backgroundColor: '#FF4136',
@@ -255,15 +256,13 @@ export default class RegisterScreen extends Component {
         )}
         {success && (
         <View style={styles.successContainer}>
+          <Text style={styles.successText}>Registration Successful! You may now Login.</Text>
           <TouchableOpacity
             onPress={() => this.setState({ success: false })}
             style={styles.closeButton}
           >
             <Ionicons name="close-circle" size={24} color="black" />
           </TouchableOpacity>
-          <View style={styles.textContainer}>
-            <Text style={styles.successText}>Registration Successful! You may now Login.</Text>
-          </View>
         </View>
         )}
       </View>
