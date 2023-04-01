@@ -18,7 +18,7 @@ Register.jsx: Register screen allows users to register. All user inputs, includi
 
 Login.jsx: Login screen allows users to login. All user inputs, including email, password are validated before being sent to the server. Error handling implemented if user inputs incorrect details. Once user successfully logs in a token session and their user id is stored in local storage. Endpoint implemented: Login into account.
 
-MainAppNav.jsx: Checks session token for authentication of user and if user is logged in. If authenticated user will be redirected to chatList.jsx (home page), if not authenticated user will be redirected to login screen. MainAppNav.jsx is used for navigation of the app after successful login. Uses profile image endpoint to display profile pic as icon on tab bar. Endpoints implemented: Get a users profile photo.
+MainAppNav.jsx: Checks session token for authentication of user and if user is logged in. If authenticated user will be redirected to chatList.jsx (home page), if not authenticated user will be redirected to login screen. MainAppNav.jsx is used for navigation of the app after successful login. 
 
 ChatList.jsx: Home page of the app after successful login. Users can view their chats and create a new chat. Users can click on an individual chat to navigate to that specific chat. Endpoints implemented: View your list of chats, Start a new conversation.
 
