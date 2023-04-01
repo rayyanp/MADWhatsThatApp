@@ -23,6 +23,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 24,
   },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+    alignSelf: 'stretch',
+    marginLeft: 40,
+    marginBottom: 5,
+  },
   input: {
     backgroundColor: 'white',
     width: '80%',
@@ -224,6 +232,7 @@ export default class LoginScreen extends Component {
               </TouchableOpacity>
             </View>
             )}
+            <Text style={styles.label}>Email:</Text>
             <TextInput
               style={styles.input}
               onChangeText={(text) => this.setState({ email: text })}
@@ -232,6 +241,7 @@ export default class LoginScreen extends Component {
               keyboardType="email-address"
               autoCapitalize="none"
             />
+            <Text style={styles.label}>Password:</Text>
             <TextInput
               style={styles.input}
               onChangeText={(text) => this.setState({ password: text })}

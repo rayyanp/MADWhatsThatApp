@@ -22,6 +22,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#666',
+    alignSelf: 'stretch',
+    marginLeft: 40,
+    marginBottom: 5,
+  },
   input: {
     backgroundColor: 'white',
     width: '80%',
@@ -199,24 +207,28 @@ export default class RegisterScreen extends Component {
           <Image source={WhatsThatLogo} style={globalStyles.logo} />
         </View>
         <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.label}>First Name:</Text>
         <TextInput
           style={styles.input}
           placeholder="First Name"
           onChangeText={(text) => this.setState({ firstName: text })}
           value={firstName}
         />
+        <Text style={styles.label}>Last Name:</Text>
         <TextInput
           style={styles.input}
           placeholder="Last Name"
           onChangeText={(text) => this.setState({ lastName: text })}
           value={lastName}
         />
+        <Text style={styles.label}>Email:</Text>
         <TextInput
           style={styles.input}
           placeholder="Email Address"
           onChangeText={(text) => this.setState({ email: text })}
           value={email}
         />
+        <Text style={styles.label}>Password:</Text>
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -224,6 +236,7 @@ export default class RegisterScreen extends Component {
           onChangeText={(text) => this.setState({ password: text })}
           value={password}
         />
+        <Text style={styles.label}>Confirm Password:</Text>
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
