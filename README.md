@@ -8,7 +8,7 @@ All endpoints have been implemented. Some endpoints have been implemented multip
 
 All user input validated.
 
-Error handling for all pages completed and displayed appropriately on the circumstance.
+Error handling for all pages completed and displayed where appropriate.
 
 App.js: Navigation for Login.jsx, Register.jsx and MainAppNav.jsx
 
