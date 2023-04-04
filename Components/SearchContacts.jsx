@@ -1,13 +1,10 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, Button, StyleSheet, ScrollView, SectionList, TouchableOpacity, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
 

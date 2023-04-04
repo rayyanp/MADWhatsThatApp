@@ -1,11 +1,8 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, SectionList, Image, TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Modal from 'react-native-modal';
 
@@ -348,6 +345,7 @@ export default class Contacts extends Component {
 
   startChat = async (userId) => {
     const { navigation } = this.props;
+    const { newChatName } = this.state;
     try {
       // Create a new chat
       const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
@@ -357,7 +355,7 @@ export default class Contacts extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: this.state.newChatName,
+          name: newChatName,
         }),
       });
 
@@ -420,26 +418,30 @@ export default class Contacts extends Component {
     </View>
   );
 
-  renderModalContent = (selectedContact) => (
-    <View style={styles.modalContent}>
-      <TextInput
-        style={styles.newChatInput}
-        onChangeText={(text) => this.setState({ newChatName: text })}
-        value={this.state.newChatName}
-        placeholder="Enter new chat name"
-      />
-      <TouchableOpacity
-        style={styles.startChatButton}
-        onPress={() => {
-          this.setState({ visibleModal: null });
-          this.startChat(selectedContact.id);
-        }}
-      >
-        <Text>Start Chat</Text>
-      </TouchableOpacity>
-      {this.renderButton(() => this.setState({ visibleModal: null }))}
-    </View>
-  );
+  renderModalContent = (selectedContact) => {
+    const { newChatName } = this.state;
+
+    return (
+      <View style={styles.modalContent}>
+        <TextInput
+          style={styles.newChatInput}
+          onChangeText={(text) => this.setState({ newChatName: text })}
+          value={newChatName}
+          placeholder="Enter new chat name"
+        />
+        <TouchableOpacity
+          style={styles.startChatButton}
+          onPress={() => {
+            this.setState({ visibleModal: null });
+            this.startChat(selectedContact.id);
+          }}
+        >
+          <Text>Start Chat</Text>
+        </TouchableOpacity>
+        {this.renderButton(() => this.setState({ visibleModal: null }))}
+      </View>
+    );
+  };
 
   render() {
     const {

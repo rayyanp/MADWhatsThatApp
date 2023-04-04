@@ -1,10 +1,7 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator, Image,
 } from 'react-native';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -182,7 +179,7 @@ export default class ChatInfoScreen extends Component {
       editChatId: null,
       editChatName: '',
       isEditingChatName: false,
-      photos: {}, // map of contact IDs to photo URLs
+      photos: {},
       userPhoto: null,
     };
   }
@@ -191,7 +188,7 @@ export default class ChatInfoScreen extends Component {
     const { navigation } = this.props;
 
     this.unsubscribe = navigation.addListener('focus', async () => {
-      const { chatId } = this.props.route.params;
+      const { route: { params: { chatId } } } = this.props;
       await this.fetchChatData(chatId);
       await this.fetchContactsData();
       await this.get_user_image();
@@ -323,7 +320,7 @@ export default class ChatInfoScreen extends Component {
   };
 
   removeMember = async (userId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
 
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
@@ -350,7 +347,7 @@ export default class ChatInfoScreen extends Component {
   };
 
   addContactToChat = async (userId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
 
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
@@ -377,7 +374,7 @@ export default class ChatInfoScreen extends Component {
   };
 
   editChatName = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { editChatId, editChatName } = this.state;
     try {
       const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${editChatId}`, {
@@ -426,6 +423,7 @@ export default class ChatInfoScreen extends Component {
       members, error, chatName, contacts, isLoading, editChatName, isEditingChatName, chatCreator,
       photos, userPhoto,
     } = this.state;
+    const { route: { params: { chatId } } } = this.props;
 
     if (isLoading) {
       return (
@@ -481,7 +479,7 @@ export default class ChatInfoScreen extends Component {
                 style={styles.editChatNameButton}
                 onPress={() => this.setState({
                   isEditingChatName: true,
-                  editChatId: this.props.route.params.chatId,
+                  editChatId: chatId,
                   editChatName: chatName,
                 })}
               >

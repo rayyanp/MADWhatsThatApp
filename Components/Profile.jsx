@@ -1,7 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/no-access-state-in-setstate */
-/* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image,
@@ -9,7 +7,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import * as EmailValidator from 'email-validator';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
@@ -179,11 +176,11 @@ export default class ProfileScreen extends Component {
       await this.get_profile_image();
 
       // Pre-populate the form with existing details
-      this.setState(() => ({
-        original_data: this.state.user,
-        first_name: this.state.user.first_name,
-        last_name: this.state.user.last_name,
-        email: this.state.user.email,
+      this.setState((prevState) => ({
+        original_data: prevState.user,
+        first_name: prevState.user.first_name,
+        last_name: prevState.user.last_name,
+        email: prevState.user.email,
       }));
     });
   }
@@ -244,19 +241,22 @@ export default class ProfileScreen extends Component {
 
   saveProfile = async () => {
     const userId = await AsyncStorage.getItem('whatsthat_user_id');
+    const {
+      first_name, last_name, email, original_data, password,
+    } = this.state;
 
     const updatedData = {};
 
-    if (this.state.first_name !== this.state.original_data.first_name) {
-      updatedData.first_name = this.state.first_name;
+    if (first_name !== original_data.first_name) {
+      updatedData.first_name = first_name;
     }
 
-    if (this.state.last_name !== this.state.original_data.last_name) {
-      updatedData.last_name = this.state.last_name;
+    if (last_name !== original_data.last_name) {
+      updatedData.last_name = last_name;
     }
 
-    if (this.state.email !== this.state.original_data.email) {
-      updatedData.email = this.state.email;
+    if (email !== original_data.email) {
+      updatedData.email = email;
     }
 
     if (updatedData.email && !EmailValidator.validate(updatedData.email)) {
@@ -264,16 +264,16 @@ export default class ProfileScreen extends Component {
       return;
     }
 
-    if (this.state.password !== '') {
+    if (password !== '') {
       const PASSWORD_REGEX = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
-      if (!PASSWORD_REGEX.test(this.state.password)) {
+      if (!PASSWORD_REGEX.test(password)) {
         this.setState({
           errorMessage:
             "Password isn't strong enough (One upper, one lower, one special, one number, at least 8 characters long)",
         });
         return;
       }
-      updatedData.password = this.state.password;
+      updatedData.password = password;
     }
 
     fetch(`http://localhost:3333/api/1.0.0/user/${userId}`, {

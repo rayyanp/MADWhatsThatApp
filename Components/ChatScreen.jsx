@@ -1,14 +1,10 @@
 /* eslint-disable no-dupe-keys */
-/* eslint-disable react/destructuring-assignment */
 /* eslint-disable radix */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet, FlatList,
 } from 'react-native';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
@@ -243,7 +239,7 @@ export default class ChatScreen extends Component {
   };
 
   fetchChatData = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
 
     try {
       const response = await fetch(
@@ -276,7 +272,7 @@ export default class ChatScreen extends Component {
   };
 
   sendMessage = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { textMessage } = this.state;
 
     if (textMessage.trim().length === 0) {
@@ -326,7 +322,7 @@ export default class ChatScreen extends Component {
   };
 
   editMessage = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { editMessageId, editTextMessage } = this.state;
     this.setState({ isEditing: true });
 
@@ -369,7 +365,7 @@ export default class ChatScreen extends Component {
   };
 
   deleteMessage = async (messageId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
 
     try {
       const response = await fetch(
@@ -401,7 +397,7 @@ export default class ChatScreen extends Component {
   };
 
   draftMessages = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { textMessage } = this.state;
 
     if (textMessage.trim().length === 0) {
@@ -444,7 +440,7 @@ export default class ChatScreen extends Component {
       isEditing, editMessageId, editTextMessage,
       error, showSuccess, userId,
     } = this.state;
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { navigation } = this.props;
 
     if (isLoading) {

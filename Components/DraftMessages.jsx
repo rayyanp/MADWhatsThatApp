@@ -1,11 +1,8 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity, TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
@@ -145,7 +142,7 @@ export default class DraftMessages extends Component {
   }
 
   fetchDraftsData = async () => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     try {
       const savedMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
       this.setState({ chatData: JSON.parse(savedMessages) || [], isLoading: false });
@@ -155,7 +152,7 @@ export default class DraftMessages extends Component {
   };
 
   deleteDraftMessage = async (messageId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     try {
       // retrieve the list of draft messages from local storage
       const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
@@ -176,7 +173,7 @@ export default class DraftMessages extends Component {
 
   // eslint-disable-next-line consistent-return
   sendDraftMessage = async (messageId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
 
     // Get the draft messages from local storage
     const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
@@ -224,7 +221,7 @@ export default class DraftMessages extends Component {
   };
 
   editDraftMessage = async (messageId) => {
-    const { chatId } = this.props.route.params;
+    const { route: { params: { chatId } } } = this.props;
     const { editTextMessage } = this.state;
     this.setState({ isEditing: true });
 

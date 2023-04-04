@@ -1,11 +1,9 @@
 /* eslint-disable object-shorthand */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import * as EmailValidator from 'email-validator';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
 import globalStyles from '../globalStyles';
 import WhatsThatLogo from '../assets/images/WhatsThatLogo.png';

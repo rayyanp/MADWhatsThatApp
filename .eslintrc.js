@@ -17,5 +17,8 @@ module.exports = {
     'react',
   ],
   rules: {
+    'react/prop-types': 'off',
+    'import/no-unresolved': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
 };

@@ -1,9 +1,7 @@
 /* eslint-disable no-use-before-define */
-/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unstable-nested-components */
 import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

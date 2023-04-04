@@ -1,5 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import {
   Text, View, StyleSheet, TouchableOpacity, TextInput, FlatList,
@@ -161,6 +159,7 @@ export default class ChatListScreen extends Component {
   };
 
   createChat = async () => {
+    const { newChatName } = this.state;
     try {
       const response = await fetch('http://localhost:3333/api/1.0.0/chat', {
         method: 'POST',
@@ -169,7 +168,7 @@ export default class ChatListScreen extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: this.state.newChatName,
+          name: newChatName,
         }),
       });
 
@@ -194,28 +193,31 @@ export default class ChatListScreen extends Component {
     }
   };
 
-  renderChatItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.chatItem}
-      onPress={() => this.props.navigation.navigate('ChatScreen', { chatId: item.chat_id })}
-    >
-      <View style={styles.chatInfo}>
-        <Text style={styles.chatName}>{item.name}</Text>
-        <Text style={styles.lastMessage}>
-          {item.last_message
-            ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
-            : 'No messages'}
-        </Text>
-      </View>
-      <View>
-        <Text style={styles.timestamp}>
-          {item.last_message?.timestamp
-            ? moment(item.last_message.timestamp).format('lll')
-            : ''}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+  renderChatItem = ({ item }) => {
+    const { navigation } = this.props;
+    return (
+      <TouchableOpacity
+        style={styles.chatItem}
+        onPress={() => navigation.navigate('ChatScreen', { chatId: item.chat_id })}
+      >
+        <View style={styles.chatInfo}>
+          <Text style={styles.chatName}>{item.name}</Text>
+          <Text style={styles.lastMessage}>
+            {item.last_message
+              ? `${item.last_message.author.first_name} ${item.last_message.author.last_name}: ${item.last_message.message}`
+              : 'No messages'}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.timestamp}>
+            {item.last_message?.timestamp
+              ? moment(item.last_message.timestamp).format('lll')
+              : ''}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   render() {
     const { chats, newChatName } = this.state;

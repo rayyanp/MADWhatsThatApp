@@ -4,9 +4,7 @@ import {
   View, Text, TextInput, TouchableOpacity, Button, StyleSheet, ScrollView, SectionList, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Ionicons } from '@expo/vector-icons';
-// eslint-disable-next-line import/no-unresolved
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
