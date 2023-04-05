@@ -28,7 +28,7 @@ Also the draft messages are saved in local storage using asyncStorage.
 
 ChatInfo.jsx: The chat info screen allows users to view and edit chat information such as the name of the chat and users in the chat. Users can edit the chat name, remove users from the chat and add contacts/users to the chat. get_profile_image used to get profile images for users in the chat, get_user_image used to get profile image of logged in users profile photo.  Endpoints implemented: View details of a single chat, Update chat information, View your contacts, Add a user to the chat, Remove a user from the chat, get a users profile photo.
 
-DraftMessage.jsx: Users can view their draft messages of that single chat. Each chat will have its own draft messages section. Users can edit the draft messages, delete the draft messages and send the draft messages to the chat. This was implemented by using asyncStorage.
+DraftMessage.jsx: Users can view their draft messages of that single chat. Each chat will have its own draft messages section. Users can edit the draft messages, delete the draft messages and send the draft messages to the chat. This was implemented by using asyncStorage. For future work scheduled messages could possible be completed by creating a new small database or adapting the api.
 
 Profile.jsx: Users can view their profile which shows their profile photo, first and last name and email. Users can also edit their profile by editing their email address, first and last name and password. All user inputs are validated before being sent to the server. Users can also update or upload a new profile photo by clicking the camera button to navigate to CameraSend.jsx. Endpoints implemented: Get user information, Update user information, Get a users profile photo.
 
