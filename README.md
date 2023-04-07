@@ -2,6 +2,8 @@
 
 Github: https://github.com/rayyanp/MADWhatsThatApp
 
+Version Control Implemented consistently with messages.
+
 ESlinter used for airbnb code style.
 
 All endpoints have been implemented. Some endpoints have been implemented multiple times.
