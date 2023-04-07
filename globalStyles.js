@@ -14,9 +14,6 @@ const globalStyles = StyleSheet.create({
     width: 350,
     height: 75,
     resizeMode: 'contain',
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
@@ -25,8 +22,10 @@ const globalStyles = StyleSheet.create({
   },
   logoContainer: {
     position: 'absolute',
-    top: 100,
+    top: 0,
+    right: 150,
     padding: 10,
+    zIndex: 999,
   },
 });
 
