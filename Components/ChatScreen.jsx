@@ -134,10 +134,13 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   chatInfoButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-    height: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    height: 35,
+    marginRight: 5,
+    marginLeft: 5,
   },
   successContainer: {
     backgroundColor: '#eaffea',
@@ -475,13 +478,13 @@ export default class ChatScreen extends Component {
             style={styles.chatInfoButton}
             onPress={() => navigation.navigate('ChatInfo', { chatId })}
           >
-            <Icon name="info" size={24} color="#FFF" />
+            <Icon name="info" size={24} color="green" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.chatInfoButton}
             onPress={() => navigation.navigate('DraftMessages', { chatId })}
           >
-            <Icon name="save" size={24} color="#FFF" />
+            <Icon name="save" size={24} color="black" />
           </TouchableOpacity>
         </View>
         {showSuccess && (
