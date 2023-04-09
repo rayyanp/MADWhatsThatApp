@@ -154,17 +154,14 @@ export default class DraftMessages extends Component {
   deleteDraftMessage = async (messageId) => {
     const { route: { params: { chatId } } } = this.props;
     try {
-      // retrieve the list of draft messages from local storage
+      // Gets draft messages from local storage
+      // and filters out the message with the specified message_id
       const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
       const parsed = JSON.parse(draftMessages);
-
-      // filter out the message with the specified message_id
       const filteredMessages = parsed.filter((message) => message.message_id !== messageId);
 
-      // store the updated list of draft messages back in local storage
+      // stores back in local storage
       await AsyncStorage.setItem(`draft_messages_${chatId}`, JSON.stringify(filteredMessages));
-
-      // update the state to reflect the deleted message
       this.fetchDraftsData();
     } catch (error) {
       this.setState({ error: 'Error deleting message' });
@@ -175,14 +172,13 @@ export default class DraftMessages extends Component {
   sendDraftMessage = async (messageId) => {
     const { route: { params: { chatId } } } = this.props;
 
-    // Get the draft messages from local storage
+    // Gets draft messages from local storage
     const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
     const parsedDraftMessages = JSON.parse(draftMessages);
 
-    // Find the draft message with the matching message ID
+    // Finds draft message with same message ID
     const draftMessage = parsedDraftMessages.find((message) => message.message_id === messageId);
 
-    // If a draft message was found, use it as the message body for the API call
     if (draftMessage) {
       try {
         const response = await fetch(
@@ -226,7 +222,7 @@ export default class DraftMessages extends Component {
     this.setState({ isEditing: true });
 
     try {
-      // retrieve the list of draft messages from local storage
+    // Gets draft messages from local storage
       const draftMessages = await AsyncStorage.getItem(`draft_messages_${chatId}`);
       const parsed = JSON.parse(draftMessages);
 
@@ -237,7 +233,7 @@ export default class DraftMessages extends Component {
         return draftMessage;
       });
 
-      // update the list of draft messages in local storage
+      // stores back in local storage
       await AsyncStorage.setItem(`draft_messages_${chatId}`, JSON.stringify(editedDraftMessages));
 
       // reset the state and refetch the data

@@ -453,7 +453,7 @@ export default class Contacts extends Component {
     function orderContacts(contacts) {
       const order = {};
 
-      // group the contacts by their first letter of the name
+      // groups the contacts by their first initial
       contacts.forEach((contact) => {
         const firstLetter = contact.name.charAt(0).toUpperCase();
         if (!order[firstLetter]) {
@@ -462,7 +462,7 @@ export default class Contacts extends Component {
         order[firstLetter].push(contact);
       });
 
-      // convert the groups object to an array of sections
+      // converts the groups object to an array of sections
       const sections = Object.keys(order).sort().map((letter) => ({
         title: letter,
         data: order[letter],
