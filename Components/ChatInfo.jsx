@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 import React, { Component } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator, Image,
@@ -164,6 +165,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999999',
   },
+  chatNameWrapper: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  iconButton: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    height: 35,
+    marginRight: 5,
+    marginLeft: 5,
+  },
 });
 
 export default class ChatInfoScreen extends Component {
@@ -181,6 +195,7 @@ export default class ChatInfoScreen extends Component {
       isEditingChatName: false,
       photos: {},
       userPhoto: null,
+      userId: null,
     };
   }
 
@@ -192,12 +207,18 @@ export default class ChatInfoScreen extends Component {
       await this.fetchChatData(chatId);
       await this.fetchContactsData();
       await this.get_user_image();
+      await this.fetchUserProfile();
     });
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
+
+  fetchUserProfile = async () => {
+    const userId = await AsyncStorage.getItem('whatsthat_user_id');
+    this.setState({ userId });
+  };
 
   fetchChatData = async (chatId) => {
     try {
@@ -247,7 +268,7 @@ export default class ChatInfoScreen extends Component {
           name: `${contact.first_name} ${contact.last_name}`,
         }));
 
-        // Call get_profile_image for each contact
+        // Calls get_profile_image for each contact
         // eslint-disable-next-line no-restricted-syntax
         for (const contact of contacts) {
           // eslint-disable-next-line no-await-in-loop
@@ -331,7 +352,35 @@ export default class ChatInfoScreen extends Component {
         },
       });
       if (response.status === 200) {
-        this.fetchChatData(chatId); // call fetchChatData after deleting the user from the chat
+        this.fetchChatData(chatId); // calls fetchChatData after deleting the user from the chat
+      } else if (response.status === 400) {
+        throw new Error('Bad Request');
+      } else if (response.status === 401) {
+        throw new Error('Unauthorized');
+      } else if (response.status === 404) {
+        throw new Error('Not Found');
+      } else {
+        throw new Error('Server Error');
+      }
+    } catch (error) {
+      this.setState({ error: error.message });
+    }
+  };
+
+  leaveChat = async (userId) => {
+    const { route: { params: { chatId } } } = this.props;
+    const { navigation } = this.props;
+
+    try {
+      const response = await fetch(`http://localhost:3333/api/1.0.0/chat/${chatId}/user/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'X-Authorization': await AsyncStorage.getItem('whatsthat_session_token'),
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+        navigation.navigate('ChatListScreen');
       } else if (response.status === 400) {
         throw new Error('Bad Request');
       } else if (response.status === 401) {
@@ -358,7 +407,7 @@ export default class ChatInfoScreen extends Component {
         },
       });
       if (response.status === 200) {
-        await this.fetchChatData(chatId); // call fetchChatData after adding the user to the chat
+        await this.fetchChatData(chatId);
       } else if (response.status === 400) {
         throw new Error('Bad Request');
       } else if (response.status === 401) {
@@ -388,7 +437,7 @@ export default class ChatInfoScreen extends Component {
         }),
       });
       if (response.status === 200) {
-        // Clear the edit chat name input field and reset editChatId and editChatName to null
+        // Clears editChatName input field and resets editChatId and editChatName to null
         this.setState({
           editChatId: null,
           editChatName: '',
@@ -421,9 +470,10 @@ export default class ChatInfoScreen extends Component {
   render() {
     const {
       members, error, chatName, contacts, isLoading, editChatName, isEditingChatName, chatCreator,
-      photos, userPhoto,
+      photos, userPhoto, userId,
     } = this.state;
     const { route: { params: { chatId } } } = this.props;
+    const { navigation } = this.props;
 
     if (isLoading) {
       return (
@@ -474,7 +524,9 @@ export default class ChatInfoScreen extends Component {
             </View>
           ) : (
             <>
-              <Text style={styles.chatName}>{chatName}</Text>
+              <View style={styles.chatNameWrapper}>
+                <Text style={styles.chatName}>{chatName}</Text>
+              </View>
               <TouchableOpacity
                 style={styles.editChatNameButton}
                 onPress={() => this.setState({
@@ -484,6 +536,15 @@ export default class ChatInfoScreen extends Component {
                 })}
               >
                 <Icon name="pencil" size={24} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('AddContactChat', { chatId })}>
+                <Icon name="account-multiple-plus" size={24} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => this.leaveChat(userId)}
+              >
+                <Icon name="logout" size={24} color="red" />
               </TouchableOpacity>
             </>
           )}
@@ -522,12 +583,14 @@ export default class ChatInfoScreen extends Component {
                     {item.last_name}
                   </Text>
                 </View>
+                {item.user_id !== parseInt(userId) && (
                 <TouchableOpacity
                   style={styles.removeMemberButton}
                   onPress={() => this.removeMember(item.user_id)}
                 >
                   <Icon name="minus" size={20} color="#fff" />
                 </TouchableOpacity>
+                )}
               </View>
             )}
           />
