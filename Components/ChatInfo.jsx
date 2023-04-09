@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   membersContainer: {
-    flex: 1,
+    flex: 2,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   memberNameText: {
-    flex: 1, fontSize: 16,
+    flex: 1,
+    fontSize: 16,
   },
   removeMemberButton: {
     backgroundColor: '#FF3B30',
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   addMemberContainer: {
-    flex: 2,
+    flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 16,
   },
@@ -576,7 +577,7 @@ export default class ChatInfoScreen extends Component {
                   )}
                 </View>
 
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <View style={styles.individualMember}>
                   <Text style={styles.memberNameText}>
                     {item.first_name}
                     {' '}
