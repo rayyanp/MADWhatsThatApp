@@ -10,6 +10,7 @@ import ChatList from './ChatList';
 import ChatScreen from './ChatScreen';
 import ChatInfo from './ChatInfo';
 import DraftMessages from './DraftMessages';
+import AddContactChat from './AddContactChat';
 import Blocked from './Blocked';
 import Contacts from './Contacts';
 import SearchContacts from './SearchContacts';
@@ -106,9 +107,10 @@ function ChatNav() {
   return (
     <Stack.Navigator initialRouteName="ChatListScreen">
       <Stack.Screen name="ChatListScreen" component={ChatList} options={{ headerShown: false }} />
-      <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      <Stack.Screen name="ChatInfo" component={ChatInfo} />
-      <Stack.Screen name="DraftMessages" component={DraftMessages} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ title: 'Chat Screen' }} />
+      <Stack.Screen name="ChatInfo" component={ChatInfo} options={{ title: 'Manage Chat' }} />
+      <Stack.Screen name="DraftMessages" component={DraftMessages} options={{ title: 'Draft Messages' }} />
+      <Stack.Screen name="AddContactChat" component={AddContactChat} options={{ title: 'Add User to Chat' }} />
     </Stack.Navigator>
   );
 }
@@ -117,8 +119,8 @@ function ContactsListNav() {
   return (
     <Stack.Navigator initialRouteName="Contacts">
       <Stack.Screen name="Contacts" component={Contacts} options={{ headerShown: false }} />
-      <Stack.Screen name="SearchContacts" component={SearchContacts} />
-      <Stack.Screen name="Blocked" component={Blocked} />
+      <Stack.Screen name="SearchContacts" component={SearchContacts} options={{ title: 'Search Contacts' }} />
+      <Stack.Screen name="Blocked" component={Blocked} options={{ title: 'Blocked Users' }} />
     </Stack.Navigator>
   );
 }
@@ -127,7 +129,7 @@ function ProfileNav() {
   return (
     <Stack.Navigator initialRouteName="EditProfile">
       <Stack.Screen name="EditProfile" component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="CameraSend" component={CameraSend} />
+      <Stack.Screen name="CameraSend" component={CameraSend} options={{ title: 'Camera' }} />
     </Stack.Navigator>
   );
 }
