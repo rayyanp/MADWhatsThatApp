@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, ActivityIndicator, Image,
@@ -166,8 +165,8 @@ export default class LoginScreen extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: email,
-        password: password,
+        email,
+        password,
       }),
     })
       .then(async (response) => {

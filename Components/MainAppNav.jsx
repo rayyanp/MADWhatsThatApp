@@ -1,5 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable react/no-unstable-nested-components */
 import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,87 +19,6 @@ import Logout from './Logout';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-export default class MainAppNav extends Component {
-  componentDidMount() {
-    const { navigation } = this.props;
-    this.unsubscribe = navigation.addListener('focus', () => {
-      this.checkLoggedIn();
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
-
-  checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('whatsthat_session_token');
-    if (!value || value === null) {
-      const { navigation } = this.props;
-      navigation.navigate('Login');
-    }
-  };
-
-  render() {
-    return (
-      <Tab.Navigator>
-        <Tab.Screen
-          name="ChatList"
-          component={ChatNav}
-          options={{
-            tabBarLabel: 'Chat List',
-            headerShown: false,
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="chatbox-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileNav}
-          options={{
-            headerShown: false,
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="person-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="ContactsList"
-          component={ContactsListNav}
-          options={{
-            tabBarLabel: 'Contacts',
-            headerShown: false,
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="people-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="SearchUser"
-          component={SearchUser}
-          options={{
-            tabBarLabel: 'Search User',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="search-outline" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Logout"
-          component={Logout}
-          options={{
-            tabBarLabel: 'Logout',
-            tabBarIcon: ({ color, size }) => (
-              <Icon name="log-out-outline" size={size} color={color} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    );
-  }
-}
 
 function ChatNav() {
   return (
@@ -132,4 +49,95 @@ function ProfileNav() {
       <Stack.Screen name="CameraSend" component={CameraSend} options={{ title: 'Camera' }} />
     </Stack.Navigator>
   );
+}
+
+function ChatIcon({ color, size }) {
+  return <Icon name="chatbox-outline" size={size} color={color} />;
+}
+
+function ProfileIcon({ color, size }) {
+  return <Icon name="person-outline" size={size} color={color} />;
+}
+
+function ContactsIcon({ color, size }) {
+  return <Icon name="people-outline" size={size} color={color} />;
+}
+
+function SearchIcon({ color, size }) {
+  return <Icon name="search-outline" size={size} color={color} />;
+}
+
+function LogoutIcon({ color, size }) {
+  return <Icon name="log-out-outline" size={size} color={color} />;
+}
+
+export default class MainAppNav extends Component {
+  componentDidMount() {
+    const { navigation } = this.props;
+    this.unsubscribe = navigation.addListener('focus', () => {
+      this.checkLoggedIn();
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  }
+
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('whatsthat_session_token');
+    if (!value || value === null) {
+      const { navigation } = this.props;
+      navigation.navigate('Login');
+    }
+  };
+
+  render() {
+    return (
+      <Tab.Navigator>
+        <Tab.Screen
+          name="ChatList"
+          component={ChatNav}
+          options={{
+            tabBarLabel: 'Chat List',
+            headerShown: false,
+            tabBarIcon: ChatIcon,
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileNav}
+          options={{
+            headerShown: false,
+            tabBarLabel: 'Profile',
+            tabBarIcon: ProfileIcon,
+          }}
+        />
+        <Tab.Screen
+          name="ContactsList"
+          component={ContactsListNav}
+          options={{
+            tabBarLabel: 'Contacts',
+            headerShown: false,
+            tabBarIcon: ContactsIcon,
+          }}
+        />
+        <Tab.Screen
+          name="SearchUser"
+          component={SearchUser}
+          options={{
+            tabBarLabel: 'Search User',
+            tabBarIcon: SearchIcon,
+          }}
+        />
+        <Tab.Screen
+          name="Logout"
+          component={Logout}
+          options={{
+            tabBarLabel: 'Logout',
+            tabBarIcon: LogoutIcon,
+          }}
+        />
+      </Tab.Navigator>
+    );
+  }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
@@ -169,8 +168,8 @@ export default class RegisterScreen extends Component {
       body: JSON.stringify({
         first_name: firstName,
         last_name: lastName,
-        email: email,
-        password: password,
+        email,
+        password,
       }),
     })
       .then((response) => {
