@@ -230,10 +230,15 @@ export default class ChatScreen extends Component {
       await this.fetchChatData();
       await this.fetchUserProfile();
     });
+
+    this.refresh = setInterval(async () => {
+      await this.fetchChatData();
+    }, 5000);
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+    clearInterval(this.refresh);
   }
 
   fetchUserProfile = async () => {
