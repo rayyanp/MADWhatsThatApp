@@ -1,5 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Image,
@@ -157,9 +155,9 @@ export default class ProfileScreen extends Component {
     super(props);
     this.state = {
       user: {},
-      original_data: {},
-      first_name: '',
-      last_name: '',
+      originalData: {},
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       photo: null,
@@ -177,9 +175,9 @@ export default class ProfileScreen extends Component {
 
       // Pre-populate the form with existing details
       this.setState((prevState) => ({
-        original_data: prevState.user,
-        first_name: prevState.user.first_name,
-        last_name: prevState.user.last_name,
+        originalData: prevState.user,
+        firstName: prevState.user.first_name,
+        lastName: prevState.user.last_name,
         email: prevState.user.email,
       }));
     });
@@ -242,20 +240,20 @@ export default class ProfileScreen extends Component {
   saveProfile = async () => {
     const userId = await AsyncStorage.getItem('whatsthat_user_id');
     const {
-      first_name, last_name, email, original_data, password,
+      firstName, lastName, email, originalData, password,
     } = this.state;
 
     const updatedData = {};
 
-    if (first_name !== original_data.first_name) {
-      updatedData.first_name = first_name;
+    if (firstName !== originalData.first_name) {
+      updatedData.first_name = firstName;
     }
 
-    if (last_name !== original_data.last_name) {
-      updatedData.last_name = last_name;
+    if (lastName !== originalData.last_name) {
+      updatedData.last_name = lastName;
     }
 
-    if (email !== original_data.email) {
+    if (email !== originalData.email) {
       updatedData.email = email;
     }
 
@@ -311,7 +309,7 @@ export default class ProfileScreen extends Component {
 
   render() {
     const {
-      user, errorMessage, loading, photo,
+      user, errorMessage, loading, photo, firstName, lastName, email, password,
     } = this.state;
     const { navigation } = this.props;
 
@@ -356,8 +354,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter first name"
-                    value={this.state.first_name}
-                    onChangeText={(val) => this.setState({ first_name: val })}
+                    value={firstName}
+                    onChangeText={(val) => this.setState({ firstName: val })}
                   />
                   <Icon name="person" size={24} color="#999" />
                 </View>
@@ -369,8 +367,8 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter last name"
-                    value={this.state.last_name}
-                    onChangeText={(val) => this.setState({ last_name: val })}
+                    value={lastName}
+                    onChangeText={(val) => this.setState({ lastName: val })}
                   />
                   <Icon name="person" size={24} color="#999" />
                 </View>
@@ -382,7 +380,7 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter email"
-                    value={this.state.email}
+                    value={email}
                     onChangeText={(val) => this.setState({ email: val })}
                   />
                   <Icon name="email" size={24} color="#999" />
@@ -395,7 +393,7 @@ export default class ProfileScreen extends Component {
                   <TextInput
                     style={styles.input}
                     placeholder="Enter password"
-                    value={this.state.password}
+                    value={password}
                     onChangeText={(val) => this.setState({ password: val })}
                     secureTextEntry
                   />
