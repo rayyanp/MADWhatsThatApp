@@ -183,7 +183,7 @@ export default class RegisterScreen extends Component {
             success: true,
           });
         } else if (response.status === 400) {
-          throw new Error('Bad Request');
+          throw new Error('Bad Request - User already exists');
         } else if (response.status === 500) {
           throw new Error('Server Error');
         }
