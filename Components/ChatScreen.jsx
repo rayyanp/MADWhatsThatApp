@@ -288,7 +288,7 @@ export default class ChatScreen extends Component {
       return;
     }
 
-    if (textMessage.length > 1000) {
+    if (textMessage.length > 10000) {
       this.setState({ error: 'The message is too long' });
       return;
     }
@@ -413,7 +413,7 @@ export default class ChatScreen extends Component {
       return;
     }
 
-    if (textMessage.length > 1000) {
+    if (textMessage.length > 10000) {
       this.setState({ error: 'The message is too long' });
       return;
     }
