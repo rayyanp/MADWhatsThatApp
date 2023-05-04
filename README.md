@@ -10,7 +10,13 @@ All endpoints have been implemented. Some endpoints have been implemented multip
 
 All user input validated.
 
-Error handling for all pages completed and displayed where appropriate.
+Error handling for all pages completed and displayed where appropriate. Most/key error handling shown on screencast but forgot to show some error handling that has been implemented for some errors such as:
+If user registers with an email address already registered then an error message is displayed stating that the 'user already exists'.
+If the user clicks the search button on any of the search pages without entering a search input then the an error message is displayed stating 'please enter a search query'.
+If the user searches for a user a contact and no results are found then the error message is no results is displayed.
+If the user enters a message longer than 10,000 characters then the error message 'the message is too long' is displayed.
+If the user is not logged in some how and access unauthorized pages then the error message 'unauthorized' is displayed. Also any of the other response codes also have appropriate error handling however the user is unlikely to encounter these errors due to how the app is created.
+I also forgot to show password being updated on profile page during the screencast, however this does work.
 
 App.js: Navigation for Login.jsx, Register.jsx and MainAppNav.jsx
 
